@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";  // No need for useNavigate
 import {
     Navbar,
     MobileNav,
@@ -7,6 +7,9 @@ import {
     Button,
     IconButton,
 } from "@material-tailwind/react";
+import { CustomSpeedDial } from "./SpeedDial";  // Import CustomSpeedDial
+import LoginPage from "../LoginPage/LoginPage";
+import SignupPage from "../SignupPage/SignupPage";
 
 export function StickyNavbar() {
     const [openNav, setOpenNav] = React.useState(false);
@@ -29,7 +32,6 @@ export function StickyNavbar() {
                 <Link to="/products" className="flex items-center">
                     Products
                 </Link>
-
             </Typography>
             <Typography
                 as="li"
@@ -47,9 +49,9 @@ export function StickyNavbar() {
                 color="blue-gray"
                 className="p-1 font-normal"
             >
-                <a href="#" className="flex items-center">
+                <Link to="/currency" className="flex items-center">
                     Exchange
-                </a>
+                </Link>
             </Typography>
             <Typography
                 as="li"
@@ -65,33 +67,20 @@ export function StickyNavbar() {
     );
 
     return (
-        <div className="-m-6 max-h-[768px] w-[calc(100%+48px)] overflow-scroll shadow">
-            <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4 bg-gray-50">
-                <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="-m-5 w-screen shadow">
+            <Navbar className="sticky top-0 z-10 h-max max-w-full  rounded-none px-4 py-2 lg:px-8 lg:py-2 bg-white">
+                <div className="flex items-center justify-between text-blue-gray-900 my-2">
                     <Typography
-                        className="mr-4 cursor-pointer py-1.5 font-bold text-lg"
+                        className="mr-4 cursor-pointer py-1.5 font-bold text-lg bg-gradient-to-br from-blue-300 to-green-500 inline-block text-transparent bg-clip-text"
                     >
                         <Link to="/">MarketWave</Link>
                     </Typography>
                     <div className="flex items-center gap-4">
-                        <div className="mr-4 hidden lg:block">{navList}</div>
+                        <CustomSpeedDial />
                         <div className="flex items-center gap-x-0.5">
-                            <Button
-                                variant="gradient"
-                                color="blue-gray"
-                                size="sm"
-                                className="hidden lg:inline-block outline outline-gray-300 outline-1"
-                            >
-                                <span><Link to="/login">Log In</Link></span>  {/* ! Here's the link to the Login Page */}
-                            </Button>
-                            <Button
-                                variant="gradient"
-                                color="blue"
-                                size="sm"
-                                className="hidden lg:inline-block outline outline-gray-300 outline-1"
-                            >
-                                <span>Sign in</span>
-                            </Button>
+                            {/* Render the LoginPage Drawer here */}
+                            <LoginPage />
+                            <SignupPage />
                         </div>
                         <IconButton
                             variant="text"
@@ -134,11 +123,11 @@ export function StickyNavbar() {
                 </div>
                 <MobileNav open={openNav}>
                     {navList}
-                    <div className="flex items-center gap-x-1">
-                        <Button fullWidth variant="text" size="sm" className="">
+                    <div className="flex flex-col items-center gap-x-1">
+                        <Button fullWidth variant="text" size="sm" className="w-full my-2">
                             <Link to="/login">Log In</Link>
                         </Button>
-                        <Button fullWidth variant="gradient" size="sm" className="">
+                        <Button fullWidth variant="gradient" size="sm" className="w-full my-2">
                             <span>Sign in</span>
                         </Button>
                     </div>

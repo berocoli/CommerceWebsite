@@ -32,20 +32,24 @@ export function CustomSpeedDial() {
                                 <Typography color="blue-gray" className="text-xs font-normal">
                                     Home
                                 </Typography>
-                            </SpeedDialAction></Link>
+                            </SpeedDialAction>
+                        </Link>
                         <Link to="/currency">
                             <SpeedDialAction className="bg-white">
                                 <CurrencyDollarIcon className="h-5 w-5"></CurrencyDollarIcon>
                                 <Typography color="blue-gray" className="text-xs font-normal">
                                     Rates
                                 </Typography>
-                            </SpeedDialAction></Link>
-                        <SpeedDialAction className="bg-white">
-                            <UserIcon className="h-5 w-5" />
-                            <Typography color="blue-gray" className="text-xs font-normal">
-                                Profile
-                            </Typography>
-                        </SpeedDialAction>
+                            </SpeedDialAction>
+                        </Link>
+                        <Link to="/profile">
+                            <SpeedDialAction className="bg-white">
+                                <UserIcon className="h-5 w-5" />
+                                <Typography color="blue-gray" className="text-xs font-normal">
+                                    Profile
+                                </Typography>
+                            </SpeedDialAction>
+                        </Link>
                     </SpeedDialContent>
                 </SpeedDial>
             </div>

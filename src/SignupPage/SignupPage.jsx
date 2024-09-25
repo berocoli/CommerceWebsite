@@ -1,5 +1,4 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -22,12 +21,12 @@ export default function SignupPage() {
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
-  const navigate = useNavigate(); // Initialize navigate properly
+  const [showLogin, setShowLogin] = React.useState(false);
 
-  const redirectLogin = () => {
-    handleOpen();
-    <LoginPage />;
-  }
+  const toggleLoginView = () => {
+    setShowLogin(true);
+    setOpen(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,7 +84,7 @@ export default function SignupPage() {
               Enter your email and password to Sign Up.
             </Typography>
             <form onSubmit={handleSubmit}>
-              <Typography className="-mb-2" variant="h6" placeholder="John Doe">
+              <Typography className="mb-2" variant="h6" placeholder="John Doe">
                 Your Name
               </Typography>
               <Input
@@ -94,7 +93,7 @@ export default function SignupPage() {
                 size="lg"
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })} // Added onChange
               />
-              <Typography className="-mb-2" variant="h6">
+              <Typography className="mb-2" variant="h6">
                 Your Surname
               </Typography>
               <Input
@@ -103,7 +102,7 @@ export default function SignupPage() {
                 size="lg"
                 onChange={(e) => setFormData({ ...formData, surname: e.target.value })} // Added onChange
               />
-              <Typography className="-mb-2" variant="h6">
+              <Typography className="mb-2" variant="h6">
                 Your Email
               </Typography>
               <Input
@@ -112,7 +111,7 @@ export default function SignupPage() {
                 size="lg"
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })} // Added onChange
               />
-              <Typography className="-mb-2" variant="h6">
+              <Typography className="mb-2" variant="h6">
                 Your Password
               </Typography>
               <Input
@@ -122,7 +121,7 @@ export default function SignupPage() {
                 size="lg"
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })} // Added onChange
               />
-              <CardFooter className="pt-0">
+              <CardFooter className="pt-0 mt-7">
                 <Button
                   variant="gradient"
                   type="submit"
@@ -135,10 +134,21 @@ export default function SignupPage() {
               </CardFooter>
             </form>
           </CardBody>
-          <Typography variant="small" className="mb-5 flex justify-center">
-            Already have an account?
-            <span className="text-sm bg-gradient-to-br from-blue-300 to-green-500 inline-block text-transparent bg-clip-text">Log in here.</span>
-          </Typography>
+          {showLogin ? (
+            <LoginPage />
+          ) : (
+            <Typography variant="small" className="-mt-5 mb-5 flex justify-center">
+              Already have an account?
+              <Button
+                variant="text"
+                color="blue"
+                onClick={toggleLoginView}
+                className="ml-1"
+              >
+                Login
+              </Button>
+            </Typography>
+          )}
         </Card>
       </Dialog>
     </>

@@ -2,19 +2,41 @@ import React, { useEffect, useState } from "react";
 import { StickyNavbar } from "../NavbarComp/Navbar";
 import { Typography } from "@material-tailwind/react";
 
-function CurrencyRates() {
-    const [currencies, setCurrencies] = useState(null); // Düzeltilmiş state ismi
-    const [cache, setCache] = useState(null);
+const CACHE_KEY = 'currencyRatesCache';
+const CACHE_EXPIRY = 5 * 60 * 1000; // 5 dakika (milisaniye cinsinden)
 
-    const fetchCurrencies = async () => {
-        const response = await fetch("https://localhost:7281/api/Currency/rates");
-        if (response.ok) {
-            const data = await response.json();
-
-            setCurrencies(data); // Doğru state ismi
-            setCache(data);
+const getCachedCurrencies = async () => {
+    const cachedData = sessionStorage.getItem(CACHE_KEY);
+    if (cachedData) {
+        const { timestamp, data } = JSON.parse(cachedData);
+        if (Date.now() - timestamp < CACHE_EXPIRY) {
+            return data;
         }
-    };
+    }
+
+    const response = await fetch("https://localhost:7281/api/Currency/rates");
+    if (!response.ok) {
+        throw new Error('API isteği başarısız oldu');
+    }
+    const data = await response.json();
+    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
+    return data;
+};
+
+function CurrencyRates() {
+    const [currencies, setCurrencies] = useState(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await getCachedCurrencies();
+                setCurrencies(data);
+            } catch (error) {
+                console.error("Döviz kurları alınırken hata oluştu:", error);
+            }
+        }
+        fetchData();
+    }, []);
 
     const currencyEmojis = {
         USD: "🇺🇸",
@@ -25,7 +47,7 @@ function CurrencyRates() {
     };
 
     useEffect(() => {
-        fetchCurrencies();
+        getCachedCurrencies();
     }, []);
 
     if (!currencies) {

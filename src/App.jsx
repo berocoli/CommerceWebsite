@@ -8,6 +8,7 @@ import Categories from './CategoryDrawer/Category';
 import AdminPage from './AdminPage/AdminPage';
 import SignupPage from './SignupPage/SignupPage';
 import { StickyNavbar } from './NavbarComp/Navbar';
+import ProfilePage from './ProfilePage/Profile';
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
 
         <Route path="/navbar" element={<StickyNavbar />} />
+
+        <Route path="/profile" element={<ProfilePage />} />
         {/*404 sayfası için rota*/}
       </Routes>
     </Router>

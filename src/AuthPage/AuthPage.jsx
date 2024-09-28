@@ -77,6 +77,7 @@ export default function AuthPage() {
                         console.log('Decoded Token:', decodedToken); // Hata ayıklama için
                         setIsLoggedIn(true);
                         setOpen(false);
+                        window.location.reload();
                         navigate('/');
                     } else {
                         setAuthError('Geçerli bir token alınamadı.');
@@ -84,6 +85,7 @@ export default function AuthPage() {
                 } else {
                     alert("Kayıt başarılı");
                     setIsLogin(true);
+                    navigate('/admin');
                 }
             } else {
                 const errorData = await response.json();
@@ -165,15 +167,15 @@ export default function AuthPage() {
                         {authError && <Typography color="red" className="text-center">{authError}</Typography>}
                     </CardBody>
                     <CardFooter className="pt-0">
-                        <Typography variant="small" className="mt-4 flex justify-center">
+                        <Typography variant="small" className="mt-4 flex items-center justify-center">
                             {isLogin ? "Don't have an account?" : "Already have an account?"}
                             <Button
                                 variant="text"
                                 color="blue"
                                 onClick={toggleAuthMode}
-                                className="ml-1"
+                                className="ml-2"
                             >
-                                {isLogin ? "Log In" : "Sign Up"}
+                                {isLogin ? "Sign Up" : "Log In"}
                             </Button>
                         </Typography>
                     </CardFooter>

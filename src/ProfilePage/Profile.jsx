@@ -12,27 +12,48 @@ import {
     TabPanel,
     Button,
     Input,
+    Suspense,
 } from "@material-tailwind/react";
-import { UserCircleIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
+import axios from "axios";
+import { UserCircleIcon, Cog6ToothIcon, TrashIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import image from "../assets/loginBg.svg";
+import { StickyNavbar } from "../NavbarComp/Navbar";
 
-const deleteId = sessionStorage.getItem('id');
 
-const deleteAccount = async (e) => {
-    e.preventDefault();
-    try{
-        const response = await axios.delete(`http://localhost:3000/users/${encodeURIComponent(deleteId)}`);
-        console.log(response);
-    }catch(error){
-        console.log(error);
+const id = localStorage.getItem('sub');
+const name = localStorage.getItem('name');
+const surname = localStorage.getItem('family_name');
+const email = localStorage.getItem('email');
+
+const handleDelete = async () => { // Define as async
+    try {
+        const response = await axios.delete('https://localhost:7281/api/User/byId', { // Use await
+            data: { id: id },
+            headers: { 'Content-Type': 'application/json' }
+        });
+        console.log(response.data);
+        localStorage.clear();
+        alert("Kullanıcı başarıyla silindi");
+        window.location.reload(); // Move this outside of alert
+    } catch (error) {
+        console.error("Silme hatası:", error.response ? error.response.data : error.message);
+        alert("Kullanıcı silme hatası");
     }
 }
 
-const name = sessionStorage.getItem('name');
-const surname = sessionStorage.getItem('surname');
-const email = sessionStorage.getItem('email');
-
 function ProfilePage() {
+    const handleDeleteClick = () => {
+        // DeleteUser bileşenini burada çağırmak yerine, sadece silme işlemini başlatın
+        if (window.confirm("Hesabınızı silmek istediğinizden emin misiniz?")) {
+            // Silme işlemi için DeleteUser bileşeninin handleDelete fonksiyonunu çağırın
+            // Bu örnek için doğrudan API çağrısı yapıyoruz
+            <Suspense fallback={<div>Loading...</div>}>
+                {handleDelete()}
+            </Suspense>
+
+        }
+    };
+
     const data = [
         {
             label: "Profile",
@@ -62,16 +83,18 @@ function ProfilePage() {
                         <Typography variant="h6" color="blue-gray" className="mb-3">
                             E-posta Değiştir
                         </Typography>
-                        <Input type="email" label="Yeni E-posta" className="mb-3" />
-                        <Button color="blue" ripple="light">
+                        <Input type="email" label="Yeni E-posta" className="mb-5" />
+                        <Button color="blue" ripple="light" className="flex items-center gap-3 mt-4">
+                            <ArrowRightIcon className="w-5 h-5 -ml-2" />
                             E-posta Güncelle
                         </Button>
                     </div>
                     <div>
-                        <Typography variant="h6" color="blue-gray" className="mb-3">
-                            Hesabı Sil
+                        <Typography variant="h6" color="blue-gray" className="animate-pulse mb-3 font-thin text-gray-800 hover:text-gray-600">
+                            If it's time to go...
                         </Typography>
-                        <Button color="red" ripple="light">
+                        <Button color="red" ripple="light" onClick={handleDeleteClick} className="flex items-center gap-3">
+                            <TrashIcon className="w-5 h-5 -ml-2" />
                             Hesabı Sil
                         </Button>
                     </div>
@@ -81,51 +104,56 @@ function ProfilePage() {
     ];
 
     return (
-        <section className="container mx-auto px-8 py-10">
-            <Card className="border border-gray-300 rounded-2xl overflow-hidden">
-                <CardHeader shadow={false} floated={false} className="relative h-60">
-                    <img
-                        src={image}
-                        alt="profile-picture"
-                        className="w-full h-full object-cover"
-                    />
-                </CardHeader>
-                <CardBody className="px-6">
-                    <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center mb-6">
-                        <div className="flex items-center gap-3">
-                            <Avatar src={image} alt="avatar" size="xl" variant="circular" className="border-2 border-white" />
-                            <div>
-                                <Typography variant="h5" color="blue-gray" className="mb-1">
-                                    {name} {surname}
-                                </Typography>
-                                <Typography variant="small" className="font-normal text-gray-600">
-                                    {email}
-                                </Typography>
+        <>
+            <div className="mx-5 my-6">
+                <StickyNavbar />
+            </div>
+            <section className="container mx-auto py-10 max-w-screen-lg overflow-hidden">
+                <Card className="w-full border border-gray-300 rounded-2xl overflow-hidden">
+                    <CardHeader shadow={false} floated={false} className="relative h-60">
+                        <img
+                            src={image}
+                            alt="profile-picture"
+                            className="w-full h-full object-cover"
+                        />
+                    </CardHeader>
+                    <CardBody className="px-6">
+                        <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center mb-6">
+                            <div className="flex items-center gap-3">
+                                <Avatar src={image} alt="avatar" size="xl" variant="circular" className="border-2 border-white" />
+                                <div>
+                                    <Typography variant="h5" color="blue-gray" className="mb-1">
+                                        {name} {surname}
+                                    </Typography>
+                                    <Typography variant="small" className="font-normal text-gray-600">
+                                        {email}
+                                    </Typography>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <Tabs value="profile">
-                        <TabsHeader>
-                            {data.map(({ label, value, icon }) => (
-                                <Tab key={value} value={value}>
-                                    <div className="flex items-center gap-2">
-                                        {React.createElement(icon, { className: "w-5 h-5" })}
-                                        {label}
-                                    </div>
-                                </Tab>
-                            ))}
-                        </TabsHeader>
-                        <TabsBody>
-                            {data.map(({ value, content }) => (
-                                <TabPanel key={value} value={value}>
-                                    {content}
-                                </TabPanel>
-                            ))}
-                        </TabsBody>
-                    </Tabs>
-                </CardBody>
-            </Card>
-        </section>
+                        <Tabs value="profile">
+                            <TabsHeader>
+                                {data.map(({ label, value, icon }) => (
+                                    <Tab key={value} value={value}>
+                                        <div className="flex items-center gap-2">
+                                            {React.createElement(icon, { className: "w-5 h-5" })}
+                                            {label}
+                                        </div>
+                                    </Tab>
+                                ))}
+                            </TabsHeader>
+                            <TabsBody>
+                                {data.map(({ value, content }) => (
+                                    <TabPanel key={value} value={value}>
+                                        {content}
+                                    </TabPanel>
+                                ))}
+                            </TabsBody>
+                        </Tabs>
+                    </CardBody>
+                </Card>
+            </section>
+        </>
     );
 }
 

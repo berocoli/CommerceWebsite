@@ -16,6 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export function CustomSpeedDial() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     return (
         <div className="relative h-12 w-full">
             <div className="absolute bottom-0 right-0">
@@ -42,14 +43,16 @@ export function CustomSpeedDial() {
                                 </Typography>
                             </SpeedDialAction>
                         </Link>
-                        <Link to="/profile">
-                            <SpeedDialAction className="bg-white">
-                                <UserIcon className="h-5 w-5" />
-                                <Typography color="blue-gray" className="text-xs font-normal">
-                                    Profile
-                                </Typography>
-                            </SpeedDialAction>
-                        </Link>
+                        {isLoggedIn && (
+                            <Link to="/profile">
+                                <SpeedDialAction className="bg-white">
+                                    <UserIcon className="h-5 w-5" />
+                                    <Typography color="blue-gray" className="text-xs font-normal">
+                                        Profile
+                                    </Typography>
+                                </SpeedDialAction>
+                            </Link>
+                        )}
                     </SpeedDialContent>
                 </SpeedDial>
             </div>

@@ -3,7 +3,7 @@ import { Dialog, Card, CardBody, CardFooter, Button, Typography, Input, Alert } 
 import loginIcon from "../assets/log-cabin-svgrepo-com.svg";
 import { useNavigate } from 'react-router-dom';
 
-// JWT decode fonksiyonu
+// JWT decode function
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -14,7 +14,7 @@ function parseJwt(token) {
 
         return JSON.parse(jsonPayload);
     } catch (error) {
-        console.error('Token çözümleme hatası:', error);
+        console.error('Token parsing error:', error);
         return {};
     }
 }
@@ -22,7 +22,7 @@ function parseJwt(token) {
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [open, setOpen] = useState(false);
-    const [formFields, setFormFields] = useState({ sub: '', name: '', family_name: '', email: '', password: '' });
+    const [formFields, setFormFields] = useState({ name: '', surname: '', eMail: '', password: '' });
     const [authError, setAuthError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
@@ -52,8 +52,8 @@ export default function AuthPage() {
         try {
             const url = isLogin ? 'https://localhost:7281/api/Auth/Login' : 'https://localhost:7281/api/User/create';
             const body = isLogin ?
-                { email: formFields.email, password: formFields.password } :
-                { sub: formFields.sub, name: formFields.name, family_name: formFields.family_name, email: formFields.email, password: formFields.password };
+                { email: formFields.eMail, password: formFields.password } :
+                { name: formFields.name, surname: formFields.surname, eMail: formFields.eMail, password: formFields.password };
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -74,33 +74,33 @@ export default function AuthPage() {
                         localStorage.setItem('email', decodedToken.email);
                         localStorage.setItem('sub', decodedToken.sub);
                         localStorage.setItem('role', decodedToken.role);
-                        console.log('Decoded Token:', decodedToken); // Hata ayıklama için
+                        console.log('Decoded Token:', decodedToken); // For debugging
                         setIsLoggedIn(true);
                         setOpen(false);
                         window.location.reload();
                         navigate('/');
                     } else {
-                        setAuthError('Geçerli bir token alınamadı.');
+                        setAuthError('Failed to obtain a valid token.');
                     }
                 } else {
-                    alert("Kayıt başarılı");
+                    alert("Registration successful");
                     setIsLogin(true);
                     navigate('/admin');
                 }
             } else {
                 const errorData = await response.json();
-                setAuthError(errorData.message || (isLogin ? 'Giriş başarısız. Lütfen tekrar deneyin.' : 'Kayıt başarısız. Lütfen tekrar deneyin.'));
+                setAuthError(errorData.message || (isLogin ? 'Login failed. Please try again.' : 'Registration failed. Please try again.'));
             }
         } catch (error) {
-            console.error('Kimlik doğrulama hatası:', error);
-            setAuthError('Bir hata oluştu. Lütfen tekrar deneyin.');
+            console.error('Authentication error:', error);
+            setAuthError('An error occurred. Please try again.');
         }
     };
 
     const toggleAuthMode = () => {
         setIsLogin(!isLogin);
         setAuthError(null);
-        setFormFields({ name: '', family_name: '', email: '', password: '' });
+        setFormFields({ name: '', surname: '', eMail: '', password: '' });
     };
 
     return (
@@ -113,7 +113,7 @@ export default function AuthPage() {
                         color="red"
                         className="hidden lg:inline-block px-4 py-2.5 text-base font-medium whitespace-nowrap"
                     >
-                        Çıkış Yap
+                        Log Out
                     </Button>
                     {showAlert && (
                         <Alert
@@ -154,12 +154,12 @@ export default function AuthPage() {
                         <form onSubmit={handleAuth} className="flex flex-col gap-4">
                             {!isLogin && (
                                 <>
-                                    <Input type="text" name="name" value={formFields.name} onChange={handleInputChange} label="İsim" size="lg" />
-                                    <Input type="text" name="family_name" value={formFields.family_name} onChange={handleInputChange} label="Soyisim" size="lg" />
+                                    <Input type="text" name="name" value={formFields.name} onChange={handleInputChange} label="Name" size="lg" />
+                                    <Input type="text" name="surname" value={formFields.surname} onChange={handleInputChange} label="Surname" size="lg" />
                                 </>
                             )}
-                            <Input type="email" name="email" value={formFields.email} onChange={handleInputChange} label="E-posta" size="lg" />
-                            <Input type="password" name="password" value={formFields.password} onChange={handleInputChange} label="Şifre" size="lg" />
+                            <Input type="email" name="eMail" value={formFields.eMail} onChange={handleInputChange} label="Email" size="lg" />
+                            <Input type="password" name="password" value={formFields.password} onChange={handleInputChange} label="Password" size="lg" />
                             <Button type="submit" variant="gradient" fullWidth>
                                 {isLogin ? "Log In" : "Sign Up"}
                             </Button>

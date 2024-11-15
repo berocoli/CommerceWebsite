@@ -8,6 +8,7 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import UpdateProduct from "./ProductOps/UpdateProduct";
+import CreateProduct from "./ProductOps/CreateProduct";
 
 export default function ProductManager() {
     const [products, setProducts] = useState([]);
@@ -56,18 +57,26 @@ export default function ProductManager() {
                                 </Button>
                             ))}
                         </CardBody>
+                        <div className="container mb-2">
+                            <Button onClick={CreateProduct}>
+                                Create Product
+                            </Button>
+                        </div>
                     </Card>
                     <Card>
                         <CardHeader color="blue" className="p-5">
                             <Typography variant="h5" color="white" className="text-center">
-                                Update Product
+                                Product Ops
                             </Typography>
                         </CardHeader>
-                        <CardBody>
+                        <CardBody className="p-4 flex justify-center items-center min-h-[500px]">
                             {selectedProduct ? (
-                                <UpdateProduct product={selectedProduct} onUpdate={fetchProducts} />
+                                <>
+                                    <UpdateProduct product={selectedProduct} onUpdate={fetchProducts} />
+
+                                </>
                             ) : (
-                                <Typography>Please select a product to update.</Typography>
+                                <Typography>Please select a product to modify.</Typography>
                             )}
                         </CardBody>
                     </Card>

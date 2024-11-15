@@ -8,6 +8,7 @@ import {
     Button,
 } from "@material-tailwind/react";
 import axios from "axios";
+import GetUsers from "./UserOps/GetUsers";
 
 export default function UserManager() {
     const [users, setUsers] = useState([]);
@@ -55,18 +56,21 @@ export default function UserManager() {
                                 </Button>
                             ))}
                         </CardBody>
+                        <div className="container mb-2">
+                            <GetUsers />
+                        </div>
                     </Card>
                     <Card>
                         <CardHeader color="blue" className="p-5">
                             <Typography variant="h5" color="white" className="text-center">
-                                Update User
+                                User Ops
                             </Typography>
                         </CardHeader>
-                        <CardBody>
+                        <CardBody className="p-4 flex justify-center items-center min-h-[500px]">
                             {selectedUser ? (
                                 <UpdateUsers user={selectedUser} onUpdate={fetchUsers} />
                             ) : (
-                                <Typography>Please select a user to update.</Typography>
+                                <Typography>Please select a user to modify.</Typography>
                             )}
                         </CardBody>
                     </Card>

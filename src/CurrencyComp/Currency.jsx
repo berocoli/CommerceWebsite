@@ -10,13 +10,14 @@ const getCachedCurrencies = async () => {
     if (cachedData) {
         const { timestamp, data } = JSON.parse(cachedData);
         if (Date.now() - timestamp < CACHE_EXPIRY) {
+            console.log("using cached data");
             return data;
         }
     }
-
+    console.log("Fetching data from the API");
     const response = await fetch("https://localhost:7281/api/Currency/rates");
     if (!response.ok) {
-        throw new Error('API isteği başarısız oldu');
+        throw new Error('API request failed.');
     }
     const data = await response.json();
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));

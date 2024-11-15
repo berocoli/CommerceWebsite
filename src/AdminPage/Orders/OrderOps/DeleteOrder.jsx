@@ -7,7 +7,7 @@ const DeleteOrder = ({ orderId, onDelete }) => {
         if (!orderId) return;
 
         try {
-            await axios.delete(`https://localhost:7281/api/Order/${orderId}`);
+            await axios.delete(`https://localhost:7281/api/Order/${encodeURIComponent(orderId)}`);
             onDelete();
         } catch (error) {
             console.error("Sipariş silme hatası:", error);
@@ -16,7 +16,7 @@ const DeleteOrder = ({ orderId, onDelete }) => {
 
     return (
         <Button color="red" ripple="light" onClick={handleDelete}>
-            Siparişi Sil
+            Delete Order
         </Button>
     );
 };

@@ -1,38 +1,42 @@
 import React, { useCallback } from "react";
 import axios from "axios";
-import { 
-    Typography,
-    Button 
-} from "@material-tailwind/react";
+import { Typography, Button } from "@material-tailwind/react";
 
-const DeleteUser = ({ userId }) => {  // Destructuring ile prop'u alıyoruz
-    const handleDelete = useCallback(async () => {
-        if (!userId) return;
+const DeleteUser = ({ userId }) => {
+  const handleDelete = useCallback(async () => {
+    if (!userId) return;
 
-        try {
-            const response = await axios.delete(`https://localhost:7281/api/User/byId`, {
-                data: { id: userId },  // data içinde id'yi gönderiyoruz
-                headers: { 'Content-Type': 'application/json' }
-            });
-            console.log(response.data);
-            alert("Kullanıcı başarıyla silindi", window.location.reload());
-            // Kullanıcı silindikten sonra gerekli işlemleri yapın (örneğin, state'i güncelleyin veya sayfayı yenileyin)
-        } catch(error) {
-            console.error("Silme hatası:", error.response ? error.response.data : error.message);
-            alert("Kullanıcı silme hatası");
+    try {
+      const response = await axios.delete(
+        `https://localhost:7281/api/User/byId`,
+        {
+          data: { id: userId },
+          headers: { "Content-Type": "application/json" },
         }
-    }, [userId]);  // userId'yi dependency array'e ekliyoruz
-
-    if (!userId) {
-        return <Typography>Kullanıcı bulunamadı.</Typography>;
+      );
+      console.log(response.data);
+      alert("User successfully deleted");
+      window.location.reload();
+    } catch (error) {
+      console.error(
+        "Deletion error:",
+        error.response ? error.response.data : error.message
+      );
+      alert("Error deleting user");
     }
+  }, [userId]);
 
-    return (
-        <div>
-            <Button onClick={handleDelete} className="bg-red-500 text-white text-center mx-auto block mt-4 w-full hover:bg-red-700 hover:text-white">
-                Kullanıcıyı Sil
-            </Button>
-        </div>
-    );
-}
+  if (!userId) {
+    return <Typography>User not found.</Typography>;
+  }
+
+  return (
+    <Button
+      onClick={handleDelete}
+      className="w-full h-10 bg-red-500 text-white hover:bg-red-700"
+    >
+      Delete User
+    </Button>
+  );
+};
 export default DeleteUser;

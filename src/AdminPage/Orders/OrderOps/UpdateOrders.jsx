@@ -10,6 +10,8 @@ import axios from "axios";
 const UpdateOrders = ({ order, onUpdate }) => {
   const [orderData, setOrderData] = useState({
     id: "",
+    userId: "",
+    cartId: "",
     address: "",
     description: "",
     status: "",
@@ -19,6 +21,8 @@ const UpdateOrders = ({ order, onUpdate }) => {
     if (order) {
       setOrderData({
         id: order.id || "",
+        userId: order.userId || "",
+        cartId: order.cartId || "",
         address: order.address || "",
         description: order.description || "",
         status: order.status || "",
@@ -46,22 +50,24 @@ const UpdateOrders = ({ order, onUpdate }) => {
   }, [orderData, onUpdate]);
 
   return (
-    <Card color="transparent" shadow={false}>
+    <Card color="transparent" shadow={false} className="py-1 text-center">
       <Typography variant="h4" color="blue-gray">
-        Sipariş Güncelle
+        Update Order
       </Typography>
       <Typography color="gray" className="mt-1 font-normal">
-        Sipariş bilgilerini güncellemek için formu doldurun.
+        Fill out the form to update order information.
       </Typography>
-      <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
+      <form onSubmit={handleSubmit} className="mt-8 mb-2 w-full max-w-md sm:w-96">
         <div className="mb-4 flex flex-col gap-6">
-          <Input size="lg" label="ID" name="id" value={orderData.id} onChange={handleChange} />
-          <Input size="lg" label="Adres" name="address" value={orderData.address} onChange={handleChange} />
-          <Input size="lg" label="Açıklama" name="description" value={orderData.description} onChange={handleChange} />
-          <Input size="lg" label="Durum" name="status" value={orderData.status} onChange={handleChange} />
+          <Input size="lg" label="ID" name="id" value={orderData.id} readOnly onChange={handleChange} />
+          <Input size="lg" label="User ID" name="userId" value={orderData.userId} readOnly onChange={handleChange} />
+          <Input size="lg" label="Cart ID" name="cartId" value={orderData.cartId} readOnly onChange={handleChange} />
+          <Input size="lg" label="Address" name="address" value={orderData.address} onChange={handleChange} />
+          <Input size="lg" label="Description" name="description" value={orderData.description} onChange={handleChange} />
+          <Input size="lg" label="Status" name="status" value={orderData.status} onChange={handleChange} />
         </div>
-        <Button className="mt-6" fullWidth type="submit" onClick={handleSubmit}>
-          Güncelle
+        <Button className="my-8" fullWidth type="submit" onClick={handleSubmit}>
+          Update
         </Button>
       </form>
     </Card>

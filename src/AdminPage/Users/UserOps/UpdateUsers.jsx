@@ -53,33 +53,37 @@ const UpdateUsers = ({ user, onUpdate }) => {
 
   return (
     <>
-    <Card color="transparent" shadow={false}>
-      <Typography variant="h4" color="blue-gray">
-        Users
-      </Typography>
-      <Typography color="gray" className="mt-1 font-normal">
-        Fill out the form to update user information.
-      </Typography>
-      <form onSubmit={handleSubmit} className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96">
-        <div className="mb-4 flex flex-col gap-6">
-          <Input size="lg" label="ID" name="id" value={userData.id} onChange={handleChange} disabled />
-          <Input size="lg" label="Name" name="name" value={userData.name} onChange={handleChange} />
-          <Input size="lg" label="Last Name" name="surname" value={userData.surname} onChange={handleChange} />
-          <Input size="lg" label="E-Mail" name="email" value={userData.email} onChange={handleChange} />
-          <Input type="password" size="lg" label="Şifre" name="password" value={userData.password} onChange={handleChange} />
-          <Checkbox
-            label="Administrator"
-            name="role"
-            checked={userData.role}
-            onChange={handleChange}
-          />
-        </div>
-        <Button className="mt-6" fullWidth type="submit" onClick={handleSubmit}>
-          Update
-        </Button>
-      </form>
-      <DeleteUser userId={userData.id} />
-    </Card>
+      <Card color="transparent" shadow={false} className="text-center">
+        <Typography variant="h4" color="blue-gray">
+          Users
+        </Typography>
+        <Typography color="gray" className="mt-1 font-normal">
+          Fill out the form to update user information.
+        </Typography>
+        <form onSubmit={handleSubmit} className="mt-8 mb-2 w-full max-w-md sm:w-96">
+          <div className="mb-4 flex flex-col gap-6">
+            <Input size="lg" label="ID" name="id" value={userData.id} onChange={handleChange} disabled />
+            <Input size="lg" label="Name" name="name" value={userData.name} onChange={handleChange} />
+            <Input size="lg" label="Last Name" name="surname" value={userData.surname} onChange={handleChange} />
+            <Input size="lg" label="E-Mail" name="email" value={userData.email} onChange={handleChange} />
+            <Input type="password" size="lg" label="Şifre" name="password" value={userData.password} onChange={handleChange} />
+            <Checkbox
+              label="Administrator"
+              name="role"
+              checked={userData.role}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="flex justify-center items-center mb-5">
+            <div className="flex flex-col w-60 justify-center gap-3 mt-4">
+              <Button type="submit" onClick={handleSubmit} className="w-full h-10">
+                Update
+              </Button>
+              <DeleteUser userId={userData.id} />
+            </div>
+          </div>
+        </form>
+      </Card>
     </>
   );
 }

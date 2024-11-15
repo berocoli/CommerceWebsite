@@ -18,6 +18,7 @@ import axios from "axios";
 import { UserCircleIcon, Cog6ToothIcon, TrashIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
 import image from "../assets/loginBg.svg";
 import { StickyNavbar } from "../NavbarComp/Navbar";
+import DeleteProfile from "./ProfileDelete";
 
 
 const id = localStorage.getItem('sub');
@@ -61,12 +62,6 @@ function ProfilePage() {
             icon: UserCircleIcon,
             content: (
                 <div className="space-y-4">
-                    <Typography variant="h6" color="blue-gray">
-                        Kişisel Bilgiler
-                    </Typography>
-                    <Typography>Ad: {name}</Typography>
-                    <Typography>Soyad: {surname}</Typography>
-                    <Typography>E-posta: {email}</Typography>
                     <Typography className="mt-4">
                         Tutkulu bir UI/UX tasarımcısı olarak, sezgisel ve ilgi çekici dijital deneyimler yaratmaya odaklanıyorum. Tasarım düşüncesi, yaratıcılık ve problem çözme aşkıyla yönlendiriliyorum.
                     </Typography>
@@ -74,29 +69,27 @@ function ProfilePage() {
             ),
         },
         {
-            label: "Ayarlar",
+            label: "Settings",
             value: "settings",
             icon: Cog6ToothIcon,
             content: (
                 <div className="space-y-6">
                     <div>
                         <Typography variant="h6" color="blue-gray" className="mb-3">
-                            E-posta Değiştir
+
                         </Typography>
-                        <Input type="email" label="Yeni E-posta" className="mb-5" />
+                        
+                        <Input type="email" label="New Mail Address" className="mb-5" />
                         <Button color="blue" ripple="light" className="flex items-center gap-3 mt-4">
                             <ArrowRightIcon className="w-5 h-5 -ml-2" />
-                            E-posta Güncelle
+                            Update Address
                         </Button>
                     </div>
                     <div>
                         <Typography variant="h6" color="blue-gray" className="animate-pulse mb-3 font-thin text-gray-800 hover:text-gray-600">
                             If it's time to go...
                         </Typography>
-                        <Button color="red" ripple="light" onClick={handleDeleteClick} className="flex items-center gap-3">
-                            <TrashIcon className="w-5 h-5 -ml-2" />
-                            Hesabı Sil
-                        </Button>
+                        <DeleteProfile />
                     </div>
                 </div>
             ),

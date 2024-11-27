@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { StickyNavbar } from "../NavbarComp/Navbar";
-import { Typography } from "@material-tailwind/react";
+import { Typography, Spinner } from "@material-tailwind/react";
+import { FooterComponent } from "../Footer/FooterComponent";
 
 const CACHE_KEY = 'currencyRatesCache';
-const CACHE_EXPIRY = 5 * 60 * 1000; // 5 dakika (milisaniye cinsinden)
+const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 const getCachedCurrencies = async () => {
     const cachedData = sessionStorage.getItem(CACHE_KEY);
     if (cachedData) {
         const { timestamp, data } = JSON.parse(cachedData);
         if (Date.now() - timestamp < CACHE_EXPIRY) {
-            console.log("using cached data");
+            console.log("Using cached data");
             return data;
         }
     }
@@ -26,14 +27,21 @@ const getCachedCurrencies = async () => {
 
 function CurrencyRates() {
     const [currencies, setCurrencies] = useState(null);
+    const [loading, setLoading] = useState(true); // Initialize loading state
+    const [error, setError] = useState(null);     // Optional: error state
 
     useEffect(() => {
         async function fetchData() {
+            setLoading(true);  // Set loading to true when starting the fetch
             try {
                 const data = await getCachedCurrencies();
                 setCurrencies(data);
+                setError(null); // Reset error if fetch is successful
             } catch (error) {
-                console.error("Döviz kurları alınırken hata oluştu:", error);
+                console.error("Error fetching currency rates:", error);
+                setError('Failed to fetch currency rates.');
+            } finally {
+                setLoading(false); // Set loading to false when fetch is complete
             }
         }
         fetchData();
@@ -47,54 +55,26 @@ function CurrencyRates() {
         QAR: "🇶🇦",
     };
 
-    useEffect(() => {
-        getCachedCurrencies();
-    }, []);
-
-    if (!currencies) {
+    if (loading) {
+        // Render loading spinner while data is being fetched
         return (
             <>
-                <div className="mx-5 my-6">
-                    <StickyNavbar />
+            <div className="mx-5 my-6">
+                <StickyNavbar />
+            </div>
+                <div className="flex justify-center items-center my-24 animate-pulse">
+                    <Spinner color='green' className="h-12 w-12 text-blue-600" />
                 </div>
+            </>
+        );
+    }
+
+    if (error) {
+        // Render error message if data fetch fails
+        return (
+            <>
                 <div className="flex justify-center items-center my-24">
-                    <div className="max-w-full animate-pulse">
-                        <Typography
-                            as="div"
-                            variant="h1"
-                            className="mb-4 h-3 w-56 rounded-full bg-gray-300"
-                        >
-                            &nbsp;
-                        </Typography>
-                        <Typography
-                            as="div"
-                            variant="paragraph"
-                            className="mb-2 h-2 w-72 rounded-full bg-gray-300"
-                        >
-                            &nbsp;
-                        </Typography>
-                        <Typography
-                            as="div"
-                            variant="paragraph"
-                            className="mb-2 h-2 w-72 rounded-full bg-gray-300"
-                        >
-                            &nbsp;
-                        </Typography>
-                        <Typography
-                            as="div"
-                            variant="paragraph"
-                            className="mb-2 h-2 w-72 rounded-full bg-gray-300"
-                        >
-                            &nbsp;
-                        </Typography>
-                        <Typography
-                            as="div"
-                            variant="paragraph"
-                            className="mb-2 h-2 w-72 rounded-full bg-gray-300"
-                        >
-                            &nbsp;
-                        </Typography>
-                    </div>
+                    <Typography color="red">{error}</Typography>
                 </div>
             </>
         );
@@ -102,7 +82,7 @@ function CurrencyRates() {
 
     return (
         <>
-            <div className="mx-5 my-5">
+            <div className="mx-5 my-6">
                 <StickyNavbar />
             </div>
             <Typography
@@ -129,29 +109,31 @@ function CurrencyRates() {
                                 <th className="table-cell px-6 py-3 text-left text-xs font-medium text-gray-100 uppercase tracking-wider">
                                     Forex Selling 💸
                                 </th>
-
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currencies.map((currency) => (
-                                <tr key={currency.currencyCode}> {/* key prop'u için doğru anahtar */}
+                            {currencies && currencies.map((currency) => (
+                                <tr key={currency.currencyCode}>
                                     <td className="px-6 py-4 whitespace-nowrap outline outline-2 outline-gray-100">
-                                        {currencyEmojis[currency.currencyCode]} {currency.currencyCode} {/* currencyCode küçük harfle */}
+                                        {currencyEmojis[currency.currencyCode]} {currency.currencyCode}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap outline outline-2 outline-gray-100">
-                                        {currency.unit} {/* unit küçük harfle */}
+                                        {currency.unit}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap outline outline-2 outline-gray-100">
-                                        {currency.forexBuying} {/* forexBuying küçük harfle */}
+                                        {currency.forexBuying}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap outline outline-2 outline-gray-100">
-                                        {currency.forexSelling} {/* forexSelling küçük harfle */}
+                                        {currency.forexSelling}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div className='mt-56 -mr-5'>
+                <FooterComponent />
             </div>
         </>
     );

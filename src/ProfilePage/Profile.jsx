@@ -4,6 +4,7 @@ import {
     Card,
     CardBody,
     CardHeader,
+    Textarea,
     Typography,
     Tabs,
     TabsHeader,
@@ -19,6 +20,7 @@ import { UserCircleIcon, Cog6ToothIcon, TrashIcon, ArrowRightIcon } from "@heroi
 import image from "../assets/loginBg.svg";
 import { StickyNavbar } from "../NavbarComp/Navbar";
 import DeleteProfile from "./ProfileDelete";
+import { FooterComponent } from "../Footer/FooterComponent";
 
 
 const id = localStorage.getItem('sub');
@@ -62,9 +64,8 @@ function ProfilePage() {
             icon: UserCircleIcon,
             content: (
                 <div className="space-y-4">
-                    <Typography className="mt-4">
-                        Tutkulu bir UI/UX tasarımcısı olarak, sezgisel ve ilgi çekici dijital deneyimler yaratmaya odaklanıyorum. Tasarım düşüncesi, yaratıcılık ve problem çözme aşkıyla yönlendiriliyorum.
-                    </Typography>
+                    <Textarea label="Write your description here!">
+                    </Textarea>
                 </div>
             ),
         },
@@ -78,7 +79,7 @@ function ProfilePage() {
                         <Typography variant="h6" color="blue-gray" className="mb-3">
 
                         </Typography>
-                        
+
                         <Input type="email" label="New Mail Address" className="mb-5" />
                         <Button color="blue" ripple="light" className="flex items-center gap-3 mt-4">
                             <ArrowRightIcon className="w-5 h-5 -ml-2" />
@@ -103,13 +104,6 @@ function ProfilePage() {
             </div>
             <section className="container mx-auto py-10 max-w-screen-lg overflow-hidden">
                 <Card className="w-full border border-gray-300 rounded-2xl overflow-hidden">
-                    <CardHeader shadow={false} floated={false} className="relative h-60">
-                        <img
-                            src={image}
-                            alt="profile-picture"
-                            className="w-full h-full object-cover"
-                        />
-                    </CardHeader>
                     <CardBody className="px-6">
                         <div className="flex lg:gap-0 gap-6 flex-wrap justify-between items-center mb-6">
                             <div className="flex items-center gap-3">
@@ -146,6 +140,10 @@ function ProfilePage() {
                     </CardBody>
                 </Card>
             </section>
+            <div className="my-11"></div>
+            <div className='mt-98'>
+                <FooterComponent />
+            </div>
         </>
     );
 }

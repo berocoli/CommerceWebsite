@@ -5,6 +5,7 @@ import { StickyNavbar } from "../NavbarComp/Navbar";
 import UserManager from "./Users/UserManager";
 import ProductManager from "./Products/ProductManager";
 import OrderManager from "./Orders/OrderManager";
+import { FooterComponent } from "../Footer/FooterComponent";
 
 
 
@@ -41,10 +42,10 @@ export default function AdminPage() {
           <Card className="w-96 mx-auto">
             <CardBody>
               <Typography variant="h5" className="mb-2">
-                Welcome, {adminData?.name}
+                Welcome, <span variant="h5" className="bg-gradient-to-r from-blue-300 to-green-500 text-transparent bg-clip-text">{adminData?.name} {adminData?.surname}</span>
               </Typography>
               <Typography>
-                Email: {adminData?.email}
+                {adminData?.email}
               </Typography>
             </CardBody>
             <CardFooter className="pt-0">
@@ -62,48 +63,53 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-700">
-      <div className='mx-5 my-6'>
-        <StickyNavbar />
-      </div>
-      <div className="container mx-auto px-4 py-8">
-        <Typography variant="h2" className="text-center mb-6">
-          Admin Panel
-        </Typography>
-
-        <div className="flex justify-center mb-6">
-          <Button
-            color={activeComponent === 'dashboard' ? 'blue' : 'gray'}
-            onClick={() => setActiveComponent('dashboard')}
-            className="mr-4"
-          >
-            Dashboard
-          </Button>
-          <Button
-            color={activeComponent === 'users' ? 'blue' : 'gray'}
-            onClick={() => setActiveComponent('users')}
-            className="mr-4"
-          >
-            User Management
-          </Button>
-          <Button
-            color={activeComponent === 'products' ? 'blue' : 'gray'}
-            onClick={() => setActiveComponent('products')}
-            className="mr-4"
-          >
-            Product Management
-          </Button>
-          <Button
-            color={activeComponent === 'orders' ? 'blue' : 'gray'}
-            onClick={() => setActiveComponent('orders')}
-            className="mr-4"
-          >
-            Order Management
-          </Button>
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-700">
+        <div className='mx-5 my-6'>
+          <StickyNavbar />
         </div>
+        <div className="container mx-auto px-4 py-8">
+          <Typography variant="h2" className="text-center mb-6">
+            Admin Panel
+          </Typography>
 
-        {renderComponent()}
+          <div className="flex justify-center mb-6">
+            <Button
+              color={activeComponent === 'dashboard' ? 'blue' : 'gray'}
+              onClick={() => setActiveComponent('dashboard')}
+              className="mr-4"
+            >
+              Dashboard
+            </Button>
+            <Button
+              color={activeComponent === 'users' ? 'blue' : 'gray'}
+              onClick={() => setActiveComponent('users')}
+              className="mr-4"
+            >
+              User Management
+            </Button>
+            <Button
+              color={activeComponent === 'products' ? 'blue' : 'gray'}
+              onClick={() => setActiveComponent('products')}
+              className="mr-4"
+            >
+              Product Management
+            </Button>
+            <Button
+              color={activeComponent === 'orders' ? 'blue' : 'gray'}
+              onClick={() => setActiveComponent('orders')}
+              className="mr-4"
+            >
+              Order Management
+            </Button>
+          </div>
+
+          {renderComponent()}
+        </div>
+        <div className='mt-72 -mr-5'>
+          <FooterComponent />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,19 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Typography, IconButton } from "@material-tailwind/react";
 import {
-    Typography,
-    IconButton,
-    SpeedDial,
-    SpeedDialHandler,
-    SpeedDialContent,
-    SpeedDialAction,
-} from "@material-tailwind/react";
-import {
-    MagnifyingGlassPlusIcon,
     HomeIcon,
     CurrencyDollarIcon,
     UserIcon,
     ShoppingBagIcon,
+    BuildingStorefrontIcon,
 } from "@heroicons/react/24/outline";
 import Cart from "../UserCarts/Cart"; // Import the Cart component
 
@@ -22,62 +15,57 @@ export function CustomSpeedDial() {
     const [cartOpen, setCartOpen] = useState(false);
 
     const toggleCartOpen = () => setCartOpen((cur) => !cur);
-    const closeCart = () => setCartOpen(false);
 
     return (
         <>
-            <div className="relative h-12 w-full">
-                <div className="absolute -bottom-1 right-0">
-                    <SpeedDial placement="left">
-                        <SpeedDialHandler>
-                            <IconButton
-                                color="white"
-                                size="lg"
-                                className="p-7 rounded-full border border-blue-gray-50 shadow-xl bg-gradient-to-bl from-blue-500 to-green-400"
-                            >
-                                <MagnifyingGlassPlusIcon className="h-7 w-6 transition-transform duration-300 group-hover:rotate-90" />
+            <div className="mt-2 flex items-center justify-end gap-8 p-2 bg-blue-500 text-transparent bg-clip-text shadow-none rounded-2xl ">
+                <Link to="/" className="flex flex-col items-center text-center">
+                    <IconButton size="lg" className="rounded-full bg-white shadow">
+                        <HomeIcon className="h-6 w-6 text-green-500" />
+                    </IconButton>
+                    <Typography className="text-sm font-medium mt-1">
+                        Home
+                    </Typography>
+                </Link>
+                <Link to="/currency" className="flex flex-col items-center text-center">
+                    <IconButton size="lg" className="rounded-full bg-white shadow">
+                        <CurrencyDollarIcon className="h-6 w-6 text-green-500" />
+                    </IconButton>
+                    <Typography className="text-sm font-medium  mt-1">
+                        Rates
+                    </Typography>
+                </Link>
+                <Link to="/products" className="flex flex-col items-center text-center">
+                    <IconButton size="lg" className="rounded-full bg-white shadow">
+                        <BuildingStorefrontIcon className="h-6 w-6 text-green-500" />
+                    </IconButton>
+                    <Typography className="text-sm font-medium mt-1">
+                        Shop
+                    </Typography>
+                </Link>
+                {isLoggedIn && (
+                    <>
+                        <Link to="/profile" className="flex flex-col items-center text-center">
+                            <IconButton size="lg" className="rounded-full bg-white shadow">
+                                <UserIcon className="h-6 w-6 text-green-500" />
                             </IconButton>
-                        </SpeedDialHandler>
-                        <SpeedDialContent className="p-1 flex-row rounded-full border border-blue-gray-50 bg-gradient-to-bl from-blue-500 to-green-400 shadow-xl shadow-black/10">
-                            <Link to="/">
-                                <SpeedDialAction className="bg-white">
-                                    <HomeIcon className="h-5 w-5" />
-                                    <Typography color="blue-gray" className="text-xs font-normal">
-                                        Home
-                                    </Typography>
-                                </SpeedDialAction>
-                            </Link>
-                            <Link to="/currency">
-                                <SpeedDialAction className="bg-white">
-                                    <CurrencyDollarIcon className="h-5 w-5" />
-                                    <Typography color="blue-gray" className="text-xs font-normal">
-                                        Rates
-                                    </Typography>
-                                </SpeedDialAction>
-                            </Link>
-                            {isLoggedIn && (
-                                <>
-                                    <div className="flex flex-row gap-1">
-                                        <Link to="/profile">
-                                            <SpeedDialAction className="bg-white">
-                                                <UserIcon className="h-5 w-5" />
-                                                <Typography color="blue-gray" className="text-xs font-normal">
-                                                    Profile
-                                                </Typography>
-                                            </SpeedDialAction>
-                                        </Link>
-                                        <SpeedDialAction className="bg-white" onClick={toggleCartOpen}>
-                                            <ShoppingBagIcon className="h-5 w-5" />
-                                            <Typography color="blue-gray" className="text-xs font-normal">
-                                                Cart
-                                            </Typography>
-                                        </SpeedDialAction>
-                                    </div>
-                                </>
-                            )}
-                        </SpeedDialContent>
-                    </SpeedDial>
-                </div>
+                            <Typography className="text-sm font-medium mt-1">
+                                Profile
+                            </Typography>
+                        </Link>
+                        <div
+                            className="flex flex-col items-center text-center cursor-pointer"
+                            onClick={toggleCartOpen}
+                        >
+                            <IconButton size="lg" className="rounded-full bg-white shadow">
+                                <ShoppingBagIcon className="h-6 w-6 text-green-500" />
+                            </IconButton>
+                            <Typography className="text-sm font-medium mt-1">
+                                Cart
+                            </Typography>
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Render the Cart dialog here */}

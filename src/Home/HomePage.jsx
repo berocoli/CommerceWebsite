@@ -8,7 +8,7 @@ import {
     Avatar,
 } from '@material-tailwind/react';
 import ProductsHome from './ProductsHome';
-import {FooterComponent} from '../Footer/FooterComponent';
+import { FooterComponent } from '../Footer/FooterComponent';
 
 function HomePage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,10 +31,8 @@ function HomePage() {
 
     return (
         <>
+            <StickyNavbar />
 
-            <div className='mx-5 my-6'>
-                <StickyNavbar />
-            </div>
             <div className="mx-auto max-w-screen-md py-12">
                 {isLoggedIn && userName && userFamilyName && (
                     <Typography variant="h4" color="blue-gray" className="mb-4">
@@ -45,7 +43,7 @@ function HomePage() {
             <div>
                 <ProductsHome />
             </div>
-            <div className='mt-48 -mr-5'>
+            <div className='mt-48 mr-5'>
                 <FooterComponent />
             </div>
         </>

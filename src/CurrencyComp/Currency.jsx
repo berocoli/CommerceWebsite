@@ -59,9 +59,8 @@ function CurrencyRates() {
         // Render loading spinner while data is being fetched
         return (
             <>
-            <div className="mx-5 my-6">
                 <StickyNavbar />
-            </div>
+
                 <div className="flex justify-center items-center my-24 animate-pulse">
                     <Spinner color='green' className="h-12 w-12 text-blue-600" />
                 </div>
@@ -73,6 +72,8 @@ function CurrencyRates() {
         // Render error message if data fetch fails
         return (
             <>
+                <StickyNavbar />
+        
                 <div className="flex justify-center items-center my-24">
                     <Typography color="red">{error}</Typography>
                 </div>
@@ -82,9 +83,7 @@ function CurrencyRates() {
 
     return (
         <>
-            <div className="mx-5 my-6">
-                <StickyNavbar />
-            </div>
+            <StickyNavbar />
             <Typography
                 variant="h4"
                 color="blue-gray"

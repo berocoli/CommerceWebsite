@@ -1,10 +1,10 @@
 // Products.jsx
 import React, { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { StickyNavbar } from '../NavbarComp/Navbar';
 import axios from 'axios';
 import { Button } from "@material-tailwind/react";
 import { FooterComponent } from '../Footer/FooterComponent';
-import { useParams } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import CustomSelect from './CustomSelect';
 import CategorySelect from './CategorySelect';
@@ -12,6 +12,9 @@ import LoadingState from './LoadingState';
 import ErrorState from './ErrorState';
 
 function Products() {
+  const [searchParams] = useSearchParams();
+  const categoryFromURL = searchParams.get('category') || '';
+
   const [categoriesData, setCategoriesData] = useState([]);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -20,8 +23,7 @@ function Products() {
   const [sortOption, setSortOption] = useState('price-asc');
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  const { categoryName } = useParams();
-
+  // Fetch categories and products
   const fetchCategoriesAndProducts = async () => {
     setLoading(true);
     setError(null);
@@ -31,9 +33,7 @@ function Products() {
         const data = response.data;
         setCategoriesData(data);
 
-        const allProducts = data.flatMap((category) =>
-          category.categoryProducts.map((cp) => cp.product)
-        );
+        const allProducts = data.flatMap((category) => category.products);
         setProducts(allProducts);
 
         const categoryNames = data.map((category) => category.categoryName);
@@ -42,21 +42,23 @@ function Products() {
         setError('Failed to fetch categories and products.');
       }
     } catch (error) {
+      console.error('Error fetching categories and products:', error);
       setError('Error fetching data.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Set the selected category from the URL parameter after data has been fetched
   useEffect(() => {
     fetchCategoriesAndProducts();
   }, []);
 
   useEffect(() => {
-    if (categoryName) {
-      setSelectedCategory(categoryName);
+    if (categoryFromURL && categories.includes(categoryFromURL)) {
+      setSelectedCategory(categoryFromURL);
     }
-  }, [categoryName]);
+  }, [categoryFromURL, categories]);
 
   const sortProducts = (productsList, option) => {
     const sorted = [...productsList];
@@ -99,7 +101,7 @@ function Products() {
         (cat) => cat.categoryName === selectedCategory
       );
       if (category) {
-        return category.categoryProducts.map((cp) => cp.product);
+        return category.products;
       }
       return [];
     }
@@ -121,9 +123,7 @@ function Products() {
 
   return (
     <>
-      <div className="mx-5 my-6">
-        <StickyNavbar />
-      </div>
+      <StickyNavbar />
 
       <div className="flex flex-col justify-center items-center mx-4 my-12">
         <div className="mx-auto max-w-screen-xl">
@@ -154,6 +154,7 @@ function Products() {
           </div>
         </div>
       </div>
+      
       <div className="my-20"></div>
       <FooterComponent />
     </>

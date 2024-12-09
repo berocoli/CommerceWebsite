@@ -15,7 +15,7 @@ export default function CartManager({ userId, onClose }) {
     const fetchCart = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`https://localhost:7281/api/Cart/$encodeURIComponent{userId}`);
+            const response = await axios.get(`https://localhost:7281/api/Cart/byIdSP$encodeURIComponent{userId}`);
             setCart(response.data);
         } catch (error) {
             console.error("Error fetching cart:", error);

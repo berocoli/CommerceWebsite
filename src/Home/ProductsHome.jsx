@@ -1,7 +1,5 @@
-// ProductsHome.jsx
 import React, { useState, useEffect } from "react";
 import {
-    Avatar,
     Card,
     CardBody,
     CardHeader,
@@ -17,21 +15,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function ProductsHome() {
-    const [products, setProducts] = useState([]); // Ensure this is an array
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [showAuth, setShowAuth] = useState(false); // State to control AuthPage modal
-    const [showAuthPage, setShowAuthPage] = useState(false); // New state for AuthPage
+    const [showAuth, setShowAuth] = useState(false);
     const navigate = useNavigate();
 
     const fetchProducts = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(
-                "https://localhost:7281/api/Products/Randomizer"
-            );
+            const response = await axios.get("https://localhost:7281/api/Products/Randomizer");
             if (response.status === 200 && Array.isArray(response.data)) {
                 setProducts(response.data);
                 console.log(response.data);
@@ -47,8 +42,12 @@ export default function ProductsHome() {
         }
     };
 
-    const buttonClick = () => {
-        navigate("/products");
+    const buttonClick = (product) => {
+        const categoryName = product.categoryName;
+        console.log('Button clicked for product:', product);
+        console.log('Navigating to Products page with category:', categoryName);
+        // Navigate to the Products page and pass the selected category as a query parameter
+        navigate(`/products?category=${encodeURIComponent(categoryName)}`);
     };
 
     const openAuthModal = () => {
@@ -57,7 +56,6 @@ export default function ProductsHome() {
 
     const closeAuthModal = () => {
         setShowAuth(false);
-        setShowAuthPage(false); // Close AuthPage when dialog is closed
     };
 
     useEffect(() => {
@@ -71,7 +69,6 @@ export default function ProductsHome() {
             <div className="mx-4 -my-9">
                 <div className="mx-auto max-w-screen-lg">
                     <div className="flex animate-pulse flex-wrap items-center gap-8">
-                        {/* Skeleton loaders for three products */}
                         {[...Array(3)].map((_, index) => (
                             <div
                                 key={index}
@@ -88,7 +85,11 @@ export default function ProductsHome() {
                                     <path
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 
+                                           1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 
+                                           3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 
+                                           1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 
+                                           0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
                                     />
                                 </svg>
                             </div>
@@ -105,8 +106,6 @@ export default function ProductsHome() {
                 <Typography color="red">{error}</Typography>
                 <Button
                     color="blue"
-                    ripple="light"
-                    className="mt-4"
                     onClick={fetchProducts}
                 >
                     Retry
@@ -140,7 +139,6 @@ export default function ProductsHome() {
                             </CardHeader>
 
                             <CardBody className="relative py-14 px-6 md:px-12 flex flex-col justify-between items-center gap-4">
-                                {/* Fixed height for alignment */}
                                 <Typography
                                     variant="h2"
                                     color="white"
@@ -152,7 +150,7 @@ export default function ProductsHome() {
                                     variant="h3"
                                     className="text-gray-200 text-md font-light h-16 flex items-center justify-center"
                                 >
-                                    {product.description}.
+                                    {product.description}
                                 </Typography>
                                 <Typography
                                     variant="h5"
@@ -163,18 +161,16 @@ export default function ProductsHome() {
                                 {isLoggedIn ? (
                                     <Button
                                         color="blue"
-                                        ripple="light"
+                                        onClick={() => buttonClick(product)}
                                         className="w-full"
-                                        onClick={buttonClick}
                                     >
                                         See More
                                     </Button>
                                 ) : (
                                     <Button
                                         color="blue"
-                                        ripple="light"
-                                        className="w-full"
                                         onClick={openAuthModal}
+                                        className="w-full"
                                     >
                                         See More
                                     </Button>
@@ -185,7 +181,6 @@ export default function ProductsHome() {
                 </div>
             </div>
 
-            {/* AuthPage Modal */}
             <Dialog open={showAuth} handler={closeAuthModal} size="md">
                 <div className="flex flex-col justify-center items-center">
                     <DialogHeader>

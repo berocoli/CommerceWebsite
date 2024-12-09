@@ -9,6 +9,7 @@ import AdminPage from './AdminPage/AdminPage';
 import SignupPage from './SignupPage/SignupPage';
 import { StickyNavbar } from './NavbarComp/Navbar';
 import ProfilePage from './ProfilePage/Profile';
+import UserOrder from './UserOrders/Order';
 
 function App() {
   return (
@@ -36,6 +37,8 @@ function App() {
         <Route path="/navbar" element={<StickyNavbar />} />
 
         <Route path="/profile" element={<ProfilePage />} />
+
+        <Route path="/order" element={<UserOrder />} />
         {/*404 sayfası için rota*/}
       </Routes>
     </Router>

@@ -1,17 +1,20 @@
-// ProductCard.jsx
+// src/components/ProductCard.jsx
 import React, { useState } from 'react';
 import {
     Card,
     CardHeader,
     CardBody,
-    CardFooter,
     Typography,
     Button,
 } from "@material-tailwind/react";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
+import { getUserModifiableCart, createCart, addProductToCart } from "../Services/cartService";
 
-function ProductCard({ product }) {
+export default function ProductCard({ product }) {
     const [quantity, setQuantity] = useState(1); // State for quantity
+    const [loading, setLoading] = useState(false); // State for loading
+    const [error, setError] = useState(null); // State for error handling
+    const [success, setSuccess] = useState(null); // State for success messages
 
     // Handler for quantity change
     const handleQuantityChange = (e) => {
@@ -21,14 +24,41 @@ function ProductCard({ product }) {
         setQuantity(value);
     };
 
-    // Handler for Add to Cart
-    const handleAddToCart = () => {
-        console.log(`Added ${quantity} of ${product.name} to cart.`);
-    };
-
     // Handler for increase and decrease quantity
     const increaseQuantity = () => setQuantity((prev) => Math.min(prev + 1, product.stock));
     const decreaseQuantity = () => setQuantity((prev) => Math.max(prev - 1, 1));
+
+    // Handler for Add to Cart
+    const handleAddToCart = async () => {
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        try {
+            // Check if the user has a modifiable cart
+            let cart = await getUserModifiableCart();
+
+            if (!cart) {
+                // No modifiable cart exists, so create one
+                cart = await createCart();
+                console.log('Created new cart:', cart);
+            } else {
+                console.log('Using existing modifiable cart:', cart);
+            }
+
+            // Add the product to the cart
+            console.log(`Added ${quantity} of ${product.name} ${product.id} to cart with ID ${cart.id}.`);
+            await addProductToCart(cart.userId, cart.id, product, quantity);
+
+            setSuccess(`Added ${quantity} of ${product.name} to your cart.`);
+            console.log(`Added ${quantity} of ${product.name} to cart with ID ${cart.id}.`);
+        } catch (err) {
+            console.error('Error adding product to cart:', err);
+            setError('Failed to add product to cart. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <Card className="w-72 shadow-lg border border-gray-200">
@@ -72,14 +102,15 @@ function ProductCard({ product }) {
                             >
                                 {product.stock < 10 ? `Last ${product.stock}!` : "In Stock ✅"}
                             </Typography>
-                            <CardFooter className="flex justify-between items-center mt-2 w-full px-4">
-                                {/* Compact Input Field with Increase/Decrease Buttons */}
+                            <div className="flex justify-between items-center mt-2 w-full px-4">
                                 <div className="flex items-center space-x-2">
                                     <button
                                         onClick={decreaseQuantity}
+                                        disabled={quantity <= 1}
                                         className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-black transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                     >
+                                        {/* Minus SVG Icon */}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 16 16"
@@ -99,9 +130,11 @@ function ProductCard({ product }) {
                                     />
                                     <button
                                         onClick={increaseQuantity}
+                                        disabled={quantity >= product.stock}
                                         className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-black transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                     >
+                                        {/* Plus SVG Icon */}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 16 16"
@@ -116,12 +149,17 @@ function ProductCard({ product }) {
                                 </div>
                                 <Button
                                     color="blue"
-                                    className="px-3 py-2 text-sm"
+                                    className="px-3 py-2 text-sm rounded-xl"
                                     onClick={handleAddToCart}
+                                    disabled={loading}
                                 >
-                                    <ShoppingBagIcon  className="h-6 w-6"/>
+                                    <ShoppingBagIcon className="h-6 w-6" />
                                 </Button>
-                            </CardFooter>
+                            </div>
+                            {/* Display Loading, Success, and Error Messages */}
+                            {loading && <p>Processing...</p>}
+                            {success && <p className="text-green-500">{success}</p>}
+                            {error && <p className="text-red-500">{error}</p>}
                         </>
                     )}
                 </div>
@@ -129,5 +167,3 @@ function ProductCard({ product }) {
         </Card>
     );
 }
-
-export default ProductCard;

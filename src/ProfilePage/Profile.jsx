@@ -59,17 +59,6 @@ function ProfilePage() {
 
     const data = [
         {
-            label: "Profile",
-            value: "profile",
-            icon: UserCircleIcon,
-            content: (
-                <div className="space-y-4">
-                    <Textarea label="Write your description here!">
-                    </Textarea>
-                </div>
-            ),
-        },
-        {
             label: "Settings",
             value: "settings",
             icon: Cog6ToothIcon,
@@ -99,9 +88,8 @@ function ProfilePage() {
 
     return (
         <>
-            <div className="mx-5 my-6">
-                <StickyNavbar />
-            </div>
+            <StickyNavbar />
+            
             <section className="container mx-auto py-10 max-w-screen-lg overflow-hidden">
                 <Card className="w-full border border-gray-300 rounded-2xl overflow-hidden">
                     <CardBody className="px-6">

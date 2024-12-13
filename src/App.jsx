@@ -1,7 +1,8 @@
-import React from 'react';
+// App.jsx
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './Home/HomePage'; // HomePage bileşenini içe aktar
-import Products from './ProductsComp/Products'; // Products bileşenini içe aktar
+import HomePage from './Home/HomePage';
+import Products from './ProductsComp/Products';
 import LoginPage from './LoginPage/LoginPage';
 import CurrencyRates from './CurrencyComp/Currency';
 import Categories from './CategoryDrawer/Category';
@@ -12,34 +13,34 @@ import ProfilePage from './ProfilePage/Profile';
 import UserOrder from './UserOrders/Order';
 
 function App() {
+  // This is our single source of truth for cartCount
+  const [cartCount, setCartCount] = useState(parseInt(localStorage.getItem('cartCount') || '0', 10));
+
+  const updateCartCount = (newCount) => {
+    setCartCount(newCount);
+    localStorage.setItem('cartCount', newCount);
+  };
+
   return (
     <Router>
+      {/* Pass cartCount and possibly updateCartCount to StickyNavbar 
+          if you need to. StickyNavbar can then pass cartCount to CustomSpeedDial. */}
+      <StickyNavbar cartCount={cartCount} />
+      
       <Routes>
-        {/* Ana sayfa için rota */}
         <Route path="/" element={<HomePage />} />
-
-        {/* Products sayfası için rota */}
-        <Route path="/products" element={<Products />} />
-
-        {/*Login Sayfası için rota */}
+        
+        {/* Pass updateCartCount to Products */}
+        <Route path="/products" element={<Products updateCartCount={updateCartCount} />} />
+        
         <Route path="/login" element={<LoginPage />} />
-
-        {/*Currency Sayfası için rota */}
         <Route path="/currency" element={<CurrencyRates />} />
-
-        {/*Category sayfası için rota*/}
         <Route path="/category" element={<Categories />} />
-
         <Route path="/admin" element={<AdminPage />} />
-
         <Route path="/signup" element={<SignupPage />} />
-
-        <Route path="/navbar" element={<StickyNavbar />} />
-
+        <Route path="/navbar" element={<StickyNavbar cartCount={cartCount} />} />
         <Route path="/profile" element={<ProfilePage />} />
-
         <Route path="/order" element={<UserOrder />} />
-        {/*404 sayfası için rota*/}
       </Routes>
     </Router>
   );

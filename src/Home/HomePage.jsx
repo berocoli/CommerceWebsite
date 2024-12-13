@@ -31,8 +31,6 @@ function HomePage() {
 
     return (
         <>
-            <StickyNavbar />
-
             <div className="mx-auto max-w-screen-md py-12">
                 {isLoggedIn && userName && userFamilyName && (
                     <Typography variant="h4" color="blue-gray" className="mb-4">

@@ -3,7 +3,7 @@ import axios from "axios";
 import { StickyNavbar } from "../NavbarComp/Navbar";
 import GetOrder from "./GetOrder";
 
-export default function UserOrder(cart) {
+export default function UserOrder() {
     const [orders, setOrders] = useState('');
 
     const fetchOrders = async () => {
@@ -12,8 +12,6 @@ export default function UserOrder(cart) {
 
     return (
         <>
-            <StickyNavbar />
-
             <div className="mx-5 my-10">
                 <GetOrder />
             </div>

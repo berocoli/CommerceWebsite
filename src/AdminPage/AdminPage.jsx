@@ -65,50 +65,47 @@ export default function AdminPage() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-700">
-        <div className='mx-5 my-6'>
-          <StickyNavbar />
-        </div>
-        <div className="container mx-auto px-4 py-8">
-          <Typography variant="h2" className="text-center mb-6">
-            Admin Panel
-          </Typography>
+      <div className="container mx-auto px-4 py-8">
+        <Typography variant="h2" className="text-center mb-6">
+          Admin Panel
+        </Typography>
 
-          <div className="flex justify-center mb-6">
-            <Button
-              color={activeComponent === 'dashboard' ? 'blue' : 'gray'}
-              onClick={() => setActiveComponent('dashboard')}
-              className="mr-4"
-            >
-              Dashboard
-            </Button>
-            <Button
-              color={activeComponent === 'users' ? 'blue' : 'gray'}
-              onClick={() => setActiveComponent('users')}
-              className="mr-4"
-            >
-              User Management
-            </Button>
-            <Button
-              color={activeComponent === 'products' ? 'blue' : 'gray'}
-              onClick={() => setActiveComponent('products')}
-              className="mr-4"
-            >
-              Product Management
-            </Button>
-            <Button
-              color={activeComponent === 'orders' ? 'blue' : 'gray'}
-              onClick={() => setActiveComponent('orders')}
-              className="mr-4"
-            >
-              Order Management
-            </Button>
-          </div>
+        <div className="flex justify-center mb-6">
+          <Button
+            color={activeComponent === 'dashboard' ? 'blue' : 'gray'}
+            onClick={() => setActiveComponent('dashboard')}
+            className="mr-4"
+          >
+            Dashboard
+          </Button>
+          <Button
+            color={activeComponent === 'users' ? 'blue' : 'gray'}
+            onClick={() => setActiveComponent('users')}
+            className="mr-4"
+          >
+            User Management
+          </Button>
+          <Button
+            color={activeComponent === 'products' ? 'blue' : 'gray'}
+            onClick={() => setActiveComponent('products')}
+            className="mr-4"
+          >
+            Product Management
+          </Button>
+          <Button
+            color={activeComponent === 'orders' ? 'blue' : 'gray'}
+            onClick={() => setActiveComponent('orders')}
+            className="mr-4"
+          >
+            Order Management
+          </Button>
+        </div>
 
-          {renderComponent()}
-        </div>
-        <div className='mt-72 -mr-5'>
-          <FooterComponent />
-        </div>
+        {renderComponent()}
+      </div>
+      <div className='mt-72 -mr-5 bg-white'>
+        <FooterComponent />
+      </div>
       </div>
     </>
   );

@@ -1,9 +1,9 @@
-// GetCarts.jsx
 import React, { useState, useEffect } from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CartItem from './CartItem'; // Import the CartItem component
+import CheckOutButton from './CheckOutButton'; // Import the CheckOutButton component
 
 const GetCarts = ({ onClose, onCartCountChange }) => {
   const [userId, setUserId] = useState(localStorage.getItem('sub') || '');
@@ -13,8 +13,10 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setUserId(localStorage.getItem('sub') || '');
-    fetchCarts();
+    const storedUserId = localStorage.getItem('sub') || '';
+    setUserId(storedUserId);
+    console.log('[GetCarts] userId fetched from localStorage:', storedUserId);
+    fetchCarts(storedUserId);
   }, []);
 
   useEffect(() => {
@@ -32,12 +34,13 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
     }
   }, [cart, onCartCountChange]);
 
-  const fetchCarts = async () => {
+  const fetchCarts = async (currentUserId) => {
     setLoading(true);
     setError(null);
     try {
+      console.log('[GetCarts] Fetching cart for userId:', currentUserId);
       const response = await axios.get(
-        `https://localhost:7281/api/Cart/${encodeURIComponent(userId)}`,
+        `https://localhost:7281/api/Cart/${encodeURIComponent(currentUserId)}`,
         {
           validateStatus: (status) => {
             return (status >= 200 && status < 300) || status === 204;
@@ -45,12 +48,14 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
         }
       );
       if (response.status === 200) {
+        console.log('[GetCarts] Cart response data:', response.data);
         setCart(response.data);
       } else if (response.status === 204) {
+        console.log('[GetCarts] No cart found for userId:', currentUserId);
         setCart(null);
       }
     } catch (error) {
-      console.error('Error fetching cart:', error);
+      console.error('[GetCarts] Error fetching cart:', error);
       setError('Error fetching cart');
     } finally {
       setLoading(false);
@@ -62,41 +67,6 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
       onClose();
     }
     navigate('/products');
-  };
-
-  const updateCartProductQuantity = async (productId, newQuantity) => {
-    try {
-      const cartId = cart.cartId || cart.id;
-
-      if (newQuantity > 0) {
-        await axios.put(
-          'https://localhost:7281/api/Cart/quantity',
-          null,
-          {
-            params: {
-              cartId: cartId,
-              productId: productId,
-              quantity: newQuantity,
-            },
-          }
-        );
-
-        setCart((prevCart) => {
-          const updatedCartProducts = prevCart.cartProducts.map((cartProduct) => {
-            if (cartProduct.productId === productId) {
-              return { ...cartProduct, quantity: newQuantity };
-            }
-            return cartProduct;
-          });
-          return { ...prevCart, cartProducts: updatedCartProducts };
-        });
-      } else {
-        await removeCartItem(productId);
-      }
-    } catch (error) {
-      console.error('Error updating cart:', error);
-      setError('Error updating cart');
-    }
   };
 
   const removeCartItem = async (productId) => {
@@ -123,24 +93,18 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
   };
 
   const removeAllCartItems = async (cartId) => {
+    console.log('[GetCarts] Removing all items from cartId:', cartId);
     try {
-      const cartId = cart.id || cart.cartId;
-
       const response = await axios.delete(
         `https://localhost:7281/api/Cart/deleteAllCartItems?cartId=${encodeURIComponent(cartId)}`
       );
 
-      if (response.status == 200) {
-        setCart((prevCart) => {
-          const updatedCartProducts = prevCart.cartProducts.filter(
-            (cartProduct) => cartProduct.cartId !== cartId
-          );
-          return { ...prevCart, cartProducts: updatedCartProducts };
-        });
-        fetchCarts();
+      if (response.status === 200) {
+        console.log('[GetCarts] All items removed from cart. Refreshing...');
+        fetchCarts(userId);
       }
     } catch (error) {
-      console.error('Error removing items from cart:', error);
+      console.error('[GetCarts] Error removing items from cart:', error);
       setError('Error removing item from cart.');
     }
   }
@@ -155,8 +119,12 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center mb-10">
-        <Typography>Loading...</Typography>
+      <div className='flex justify-center items-center'>
+        <div className="inline-flex flex-colm mb-10 bg-white rounded-xl px-10 py-10">
+          <Typography className='mb-6 text-center animate-pulse font-thin'>
+            Loading...
+          </Typography>
+        </div>
       </div>
     );
   }
@@ -205,7 +173,6 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
               <CartItem
                 key={cartProduct.productId}
                 cartProduct={cartProduct}
-                updateCartProductQuantity={updateCartProductQuantity}
                 removeCartItem={removeCartItem}
               />
             ))}
@@ -223,18 +190,12 @@ const GetCarts = ({ onClose, onCartCountChange }) => {
               <p className="text-gray-700">$4.99</p>
             </div>
             <hr className="my-4" />
-            <div className="flex justify-between">
-              <p className="text-lg font-bold">Total</p>
-              <div>
-                <p className="mb-1 text-lg font-bold">
-                  ${(parseFloat(calculateSubtotal(cart.cartProducts)) + 4.99).toFixed(2)} USD
-                </p>
-                <p className="text-sm text-gray-700">including VAT</p>
-              </div>
-            </div>
-            <button className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-white hover:bg-blue-600">
-              Check out
-            </button>
+            <CheckOutButton
+              subtotal={calculateSubtotal(cart.cartProducts)}
+              shipping={4.99}
+              userId={userId}
+              cartId={cart.id}
+            />
             <button
               className="mt-2 w-full rounded-md bg-red-500 py-1.5 font-medium text-white hover:bg-red-600"
               onClick={() => removeAllCartItems(cart.cartId)}

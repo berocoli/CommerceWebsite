@@ -4,6 +4,7 @@ import { Button } from "@material-tailwind/react";
 import { TrashIcon } from "@heroicons/react/20/solid";
 
 export default function DeleteProfile () {
+    const [userId, setUserId] = React.useState(localStorage.getItem("sub"));
     const handleDelete = async () => {
         try {
             const response = await axios.delete(
@@ -15,6 +16,7 @@ export default function DeleteProfile () {
             );
             console.log(response.data);
             alert("User successfully deleted");
+            localStorage.clear();
             window.location.reload();
         } catch (error) {
             console.error(

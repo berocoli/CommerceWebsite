@@ -1,5 +1,6 @@
 // src/components/ProductCard.jsx
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
     Card,
     CardHeader,
@@ -8,15 +9,14 @@ import {
     Button,
 } from "@material-tailwind/react";
 import { ShoppingBagIcon } from "@heroicons/react/24/outline";
-import { getUserModifiableCart, createCart, addProductToCart } from "../Services/cartService";
+import { getUserModifiableCart, createCart, addProductToCart, fetchCart } from "../Services/cartService";
 
-export default function ProductCard({ product }) {
-    const [quantity, setQuantity] = useState(1); // State for quantity
-    const [loading, setLoading] = useState(false); // State for loading
-    const [error, setError] = useState(null); // State for error handling
-    const [success, setSuccess] = useState(null); // State for success messages
+function ProductCard({ product }) {
+    const [quantity, setQuantity] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
 
-    // Handler for quantity change
     const handleQuantityChange = (e) => {
         let value = parseInt(e.target.value, 10);
         if (!value || value < 1) value = 1;
@@ -24,34 +24,41 @@ export default function ProductCard({ product }) {
         setQuantity(value);
     };
 
-    // Handler for increase and decrease quantity
     const increaseQuantity = () => setQuantity((prev) => Math.min(prev + 1, product.stock));
     const decreaseQuantity = () => setQuantity((prev) => Math.max(prev - 1, 1));
 
-    // Handler for Add to Cart
     const handleAddToCart = async () => {
         setLoading(true);
         setError(null);
         setSuccess(null);
 
         try {
-            // Check if the user has a modifiable cart
             let cart = await getUserModifiableCart();
 
             if (!cart) {
-                // No modifiable cart exists, so create one
                 cart = await createCart();
                 console.log('Created new cart:', cart);
             } else {
                 console.log('Using existing modifiable cart:', cart);
             }
 
-            // Add the product to the cart
-            console.log(`Added ${quantity} of ${product.name} ${product.id} to cart with ID ${cart.id}.`);
+            console.log(`Adding ${quantity} of ${product.name} (ID: ${product.id}) to cart with ID ${cart.id}.`);
             await addProductToCart(cart.userId, cart.id, product, quantity);
 
+            const updatedCart = await fetchCart(cart.userId);
+            const newCount = updatedCart.cartProducts.length;
+            localStorage.setItem('cartCount', newCount);
+            window.dispatchEvent(new Event('cartCountUpdated'))
+
+            // Safely call updateCartCount if it's a function
+            if (typeof updateCartCount === 'function') {
+                updateCartCount(newCount);
+            } else {
+                console.warn('updateCartCount is not defined or not a function.');
+            }
+
             setSuccess(`Added ${quantity} of ${product.name} to your cart.`);
-            console.log(`Added ${quantity} of ${product.name} to cart with ID ${cart.id}.`);
+            console.log(`Successfully added ${quantity} of ${product.name} to cart with ID ${cart.id}.`);
         } catch (err) {
             console.error('Error adding product to cart:', err);
             setError('Failed to add product to cart. Please try again.');
@@ -110,7 +117,7 @@ export default function ProductCard({ product }) {
                                         className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-black transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                     >
-                                        {/* Minus SVG Icon */}
+                                        {/* Minus Icon */}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 16 16"
@@ -134,7 +141,7 @@ export default function ProductCard({ product }) {
                                         className="rounded bg-slate-800 p-1.5 border border-transparent text-center text-sm text-black transition-all shadow-sm hover:shadow focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                         type="button"
                                     >
-                                        {/* Plus SVG Icon */}
+                                        {/* Plus Icon */}
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 16 16"
@@ -156,7 +163,7 @@ export default function ProductCard({ product }) {
                                     <ShoppingBagIcon className="h-6 w-6" />
                                 </Button>
                             </div>
-                            {/* Display Loading, Success, and Error Messages */}
+                            {/* Status Messages */}
                             {loading && <p>Processing...</p>}
                             {success && <p className="text-green-500">{success}</p>}
                             {error && <p className="text-red-500">{error}</p>}
@@ -167,3 +174,21 @@ export default function ProductCard({ product }) {
         </Card>
     );
 }
+
+ProductCard.propTypes = {
+    product: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        name: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        stock: PropTypes.number.isRequired,
+        description: PropTypes.string,
+        imageUrl: PropTypes.string,
+    }).isRequired,
+    updateCartCount: PropTypes.func,
+};
+
+ProductCard.defaultProps = {
+    updateCartCount: () => { },
+};
+
+export default ProductCard;

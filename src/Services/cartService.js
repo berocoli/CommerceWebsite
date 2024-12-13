@@ -9,6 +9,12 @@ const getUserId = () => {
     return localStorage.getItem('sub'); // Assuming 'sub' holds the userId
 };
 
+export async function fetchCart(userId) {
+    const response = await axios.get(`https://localhost:7281/api/Cart/${userId}`);
+    return response.data;
+}
+
+
 // Function to get the user's carts and find a modifiable one
 export const getUserModifiableCart = async () => {
     const userId = getUserId();

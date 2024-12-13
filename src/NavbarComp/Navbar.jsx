@@ -11,7 +11,7 @@ import { CustomSpeedDial } from "./SpeedDial";
 import AuthPage from "../AuthPage/AuthPage";
 
 export function StickyNavbar() {
-    const [openNav, setOpenNav] = React.useState(false);
+    const [openNav, setOpenNav] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userRole, setUserRole] = useState('');
     const [userName, setUserName] = useState('');
@@ -104,6 +104,7 @@ export function StickyNavbar() {
                         <Link to="/">MarketWave</Link>
                     </Typography>
                     <div className="flex items-center gap-x-4">
+                        {/* Pass cartCount and updateCartCount to CustomSpeedDial */}
                         <CustomSpeedDial />
                         <div className="flex items-center gap-2">
                             {isLoggedIn && userRole === 'True' && (

@@ -69,11 +69,7 @@ function ProfilePage() {
 
                         </Typography>
 
-                        <Input type="email" label="New Mail Address" className="mb-5" />
-                        <Button color="blue" ripple="light" className="flex items-center gap-3 mt-4">
-                            <ArrowRightIcon className="w-5 h-5 -ml-2" />
-                            Update Address
-                        </Button>
+                        
                     </div>
                     <div>
                         <Typography variant="h6" color="blue-gray" className="animate-pulse mb-3 font-thin text-gray-800 hover:text-gray-600">
@@ -88,7 +84,6 @@ function ProfilePage() {
 
     return (
         <>
-            <StickyNavbar />
             
             <section className="container mx-auto py-10 max-w-screen-lg overflow-hidden">
                 <Card className="w-full border border-gray-300 rounded-2xl overflow-hidden">

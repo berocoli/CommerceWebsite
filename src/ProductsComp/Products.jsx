@@ -23,6 +23,10 @@ function Products() {
   const [sortOption, setSortOption] = useState('price-asc');
   const [selectedCategory, setSelectedCategory] = useState('');
 
+  const [cartCount, setCartCount] = useState(
+    parseInt(localStorage.getItem('cartCount') || '0', 10)
+  );
+
   // Fetch categories and products
   const fetchCategoriesAndProducts = async () => {
     setLoading(true);
@@ -47,6 +51,11 @@ function Products() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const updateCartCount = (newCount) => {
+    setCartCount(newCount);
+    localStorage.setItem('cartCount', newCount);
   };
 
   // Set the selected category from the URL parameter after data has been fetched
@@ -123,8 +132,6 @@ function Products() {
 
   return (
     <>
-      <StickyNavbar />
-
       <div className="flex flex-col justify-center items-center mx-4 my-12">
         <div className="mx-auto max-w-screen-xl">
           {/* Sort Controls */}
@@ -147,14 +154,17 @@ function Products() {
               handleSortChange={handleSortChange}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
             {sortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
             ))}
           </div>
         </div>
       </div>
-      
+
       <div className="my-20"></div>
       <FooterComponent />
     </>

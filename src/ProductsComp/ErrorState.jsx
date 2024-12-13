@@ -6,7 +6,6 @@ import { Typography, Button } from "@material-tailwind/react";
 function ErrorState({ error, onRetry }) {
   return (
     <>
-      <StickyNavbar />
 
       <div className="flex flex-col items-center justify-center mb-10">
         <Typography color="red">{error}</Typography>

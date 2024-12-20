@@ -6,7 +6,7 @@ import { FooterComponent } from "../Footer/FooterComponent";
 const CACHE_KEY = 'currencyRatesCache';
 const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes in milliseconds
 
-const getCachedCurrencies = async () => {
+async function getCachedCurrencies(authToken) {
     const cachedData = sessionStorage.getItem(CACHE_KEY);
     if (cachedData) {
         const { timestamp, data } = JSON.parse(cachedData);
@@ -16,36 +16,50 @@ const getCachedCurrencies = async () => {
         }
     }
     console.log("Fetching data from the API");
-    const response = await fetch("https://localhost:7281/api/Currency/rates");
+    const response = await fetch("https://localhost:7281/api/Currency/rates", {
+        headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
+    });
+
     if (!response.ok) {
         throw new Error('API request failed.');
     }
     const data = await response.json();
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data }));
     return data;
-};
+}
 
 function CurrencyRates() {
     const [currencies, setCurrencies] = useState(null);
-    const [loading, setLoading] = useState(true); // Initialize loading state
-    const [error, setError] = useState(null);     // Optional: error state
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [authToken, setAuthToken] = useState('');
+
+    useEffect(() => {
+        setAuthToken(localStorage.getItem('token')); // Fetch token when component mounts
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
-            setLoading(true);  // Set loading to true when starting the fetch
+            setLoading(true);
             try {
-                const data = await getCachedCurrencies();
+                const data = await getCachedCurrencies(authToken);
                 setCurrencies(data);
-                setError(null); // Reset error if fetch is successful
+                setError(null);
             } catch (error) {
                 console.error("Error fetching currency rates:", error);
                 setError('Failed to fetch currency rates.');
             } finally {
-                setLoading(false); // Set loading to false when fetch is complete
+                setLoading(false);
             }
         }
-        fetchData();
-    }, []);
+
+        if (authToken) { // Ensure authToken is set before fetching data
+            fetchData();
+        }
+    }, [authToken]);
 
     const currencyEmojis = {
         USD: "🇺🇸",
@@ -56,36 +70,24 @@ function CurrencyRates() {
     };
 
     if (loading) {
-        // Render loading spinner while data is being fetched
         return (
-            <>
-
-                <div className="flex justify-center items-center my-24 animate-pulse">
-                    <Spinner color='green' className="h-12 w-12 text-blue-600" />
-                </div>
-            </>
+            <div className="flex justify-center items-center my-24 animate-pulse">
+                <Spinner color='green' className="h-12 w-12 text-blue-600" />
+            </div>
         );
     }
 
     if (error) {
-        // Render error message if data fetch fails
         return (
-            <>
-        
-                <div className="flex justify-center items-center my-24">
-                    <Typography color="red">{error}</Typography>
-                </div>
-            </>
+            <div className="flex justify-center items-center my-24">
+                <Typography color="red">{error}</Typography>
+            </div>
         );
     }
 
     return (
         <>
-            <Typography
-                variant="h4"
-                color="blue-gray"
-                className="text-center mt-10"
-            >
+            <Typography variant="h4" color="blue-gray" className="text-center mt-10">
                 Turkish National Bank Currency Rates
             </Typography>
             <div className="flex justify-center">

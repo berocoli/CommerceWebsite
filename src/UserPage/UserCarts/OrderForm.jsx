@@ -43,7 +43,7 @@ const OrderForm = ({ userId, cartId, onClose }) => {
 
             if (response.status === 200) {
                 alert("Order created successfully");
-                navigate("/orders");
+                navigate("/orders", {state: {refresh: true}} );
                 onClose();
             }
         } catch (err) {

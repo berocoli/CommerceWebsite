@@ -8,22 +8,21 @@ function AddToCart({ product }) {
     const [hasCart, setHasCart] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null); // Optional: For error handling
+    const [userId, setUserId] = useState('');
+    setUserId(localStorage.getItem('sub'));
 
     const createCart = async () => {
         try {
             const response = await axios.post('https://localhost:7281/api/Cart/create', {
                 userId: userId, // Correctly pass userId
                 isModifyable: true
-            }, {
-                validateStatus: (status) => {
-                    return status >= 200 && status < 300; // Treat 2xx as success
-                }
             });
             setCart(response.data);
             setHasCart(true);
             console.log('Cart created successfully:', response.data);
         } catch (error) {
             console.error('Error creating cart:', error);
+            console.log("User ID:", userId);
             setError('Failed to create a new cart. Please try again later.');
             // Optionally, provide user feedback
         }
@@ -34,7 +33,7 @@ function AddToCart({ product }) {
         const doesUserHaveCart = async () => {
             setLoading(true); // Start loading
             try {
-                const response = await axios.get(`https://localhost:7281/api/Cart/byIdSP${encodeURIComponent(userId)}`, {
+                const response = await axios.get(`https://localhost:7281/api/Cart/byIdSP/${encodeURIComponent(userId)}`, {
                     validateStatus: (status) => {
                         return status >= 200 && status < 300; // Default behavior
                     }
@@ -62,8 +61,8 @@ function AddToCart({ product }) {
         };
 
         doesUserHaveCart();
-    }, [userId]); 
-    
+    }, [userId]);
+
     const handleAddToCart = () => {
         if (quantity > product.stock) {
             toast.error('Seçilen miktar stok miktarından fazla olamaz!');

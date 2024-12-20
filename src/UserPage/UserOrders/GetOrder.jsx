@@ -16,6 +16,12 @@ export default function GetOrder() {
             fetchOrders();
         }
     }, [userId]);
+    
+    useEffect(() => {
+        if (location.state && location.state.refresh && userId) {
+            fetchOrders();
+        }
+    }, [location.state, userId]);
 
     const fetchOrders = async () => {
         try {

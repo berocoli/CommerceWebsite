@@ -1,5 +1,6 @@
 // src/components/ProductCard.jsx
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
     Card,
@@ -68,39 +69,53 @@ function ProductCard({ product }) {
     };
 
     return (
+
         <Card className="w-72 shadow-lg border border-gray-200">
-            <CardHeader floated={false} className="h-48">
-                <img
-                    src={`src/assets/${product.imageUrl}`}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                />
-            </CardHeader>
+            <Link
+                to="/product/page"
+                state={{ product }}
+                className="w-72 shadow-none border-none rounded-xl"
+            >
+                <CardHeader floated={false} className="h-48">
+                    <img
+                        src={`src/assets/${product.imageUrl}`}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                    />
+                </CardHeader>
+            </Link>
             <CardBody className="text-center space-y-2">
-                <Typography
-                    variant="h6"
-                    color="blue-gray"
-                    className="font-medium h-8 flex items-center justify-center"
+                <Link
+                    to="/product/page"
+                    state={{ product }}
+                    className="w-72 shadow-none border-none rounded-xl"
                 >
-                    {product.name}
-                </Typography>
-                <Typography
-                    color="gray"
-                    className="font-medium text-base h-6 flex items-center justify-center"
-                >
-                    ${product.price}
-                </Typography>
-                <Typography
-                    color="gray"
-                    className="h-12 flex items-center justify-center text-sm"
-                >
-                    {product.description}
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        color="blue-gray"
+                        className="font-medium h-8 flex items-center justify-center"
+                    >
+                        {product.name}
+                    </Typography>
+                    <Typography
+                        color="gray"
+                        className="font-medium text-base h-6 flex items-center justify-center"
+                    >
+                        ${product.price}
+                    </Typography>
+                    <Typography
+                        color="gray"
+                        className="h-12 flex items-center justify-center text-sm"
+                    >
+                        {product.description}
+                    </Typography>
+                </Link>
                 <div className="flex flex-col items-center mt-2">
                     {product.stock === 0 ? (
                         <Typography color="red" className="font-extrabold">
                             Out of Stock
                         </Typography>
+
                     ) : (
                         <>
                             <Typography
@@ -171,7 +186,7 @@ function ProductCard({ product }) {
                     )}
                 </div>
             </CardBody>
-        </Card>
+        </Card >
     );
 }
 

@@ -10,7 +10,7 @@ const getUserId = () => {
 };
 
 export async function fetchCart(userId) {
-    const response = await axios.get(`https://localhost:7281/api/Cart/${userId}`);
+    const response = await axios.get(`https://localhost:7281/api/Cart/${encodeURIComponent(userId)}`);
     return response.data;
 }
 
@@ -25,7 +25,7 @@ export const getUserModifiableCart = async () => {
     try {
         // Corrected the endpoint URL to include a slash before the userId
         const response = await axios.get(
-            `${API_BASE_URL}/byIdSP${encodeURIComponent(userId)}`
+            `${API_BASE_URL}/byIdSP/${encodeURIComponent(userId)}`
         );
 
         // Since the endpoint returns an array, we need to handle that

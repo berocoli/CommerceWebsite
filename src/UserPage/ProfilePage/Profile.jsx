@@ -17,7 +17,7 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { UserCircleIcon, Cog6ToothIcon, TrashIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
-import image from "../assets/loginBg.svg";
+import image from '../../assets/loginBg.svg';
 import { StickyNavbar } from "../NavbarComp/Navbar";
 import DeleteProfile from "./ProfileDelete";
 import { FooterComponent } from "../Footer/FooterComponent";
@@ -27,12 +27,17 @@ const id = localStorage.getItem('sub');
 const name = localStorage.getItem('name');
 const surname = localStorage.getItem('family_name');
 const email = localStorage.getItem('email');
+const isLoggedIn = localStorage.getItem('isLoggedIn');
 
 const handleDelete = async () => { // Define as async
     try {
-        const response = await axios.delete('https://localhost:7281/api/User/byId', { // Use await
-            data: { id: id },
-            headers: { 'Content-Type': 'application/json' }
+        const response = await axios.delete('https://localhost:7281/api/User/byId', { 
+            data: { 
+                'id': id 
+            },
+            headers: { 
+                'Content-Type': 'application/json' 
+            }
         });
         console.log(response.data);
         localStorage.clear();

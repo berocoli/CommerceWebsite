@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, Card, CardBody, CardFooter, Button, Typography, Input, Alert } from "@material-tailwind/react";
-import loginIcon from "../assets/log-cabin-svgrepo-com.svg";
+import loginIcon from '../../assets/log-cabin-svgrepo-com.svg';
 import { useNavigate } from 'react-router-dom';
 
 // JWT decode function
@@ -107,14 +107,6 @@ export default function AuthPage() {
         <>
             {isLoggedIn ? (
                 <>
-                    <Button
-                        onClick={handleLogout}
-                        variant="gradient"
-                        color="red"
-                        className="hidden lg:inline-block px-4 py-2.5 text-base font-medium whitespace-nowrap"
-                    >
-                        Log Out
-                    </Button>
                     {showAlert && (
                         <Alert
                             color="green"

@@ -1,7 +1,6 @@
-// CustomSpeedDial.jsx
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Typography, IconButton, Badge } from "@material-tailwind/react";
+import { Link, useNavigate } from "react-router-dom";
+import { Typography, IconButton, Badge, Menu, MenuHandler, MenuList, MenuItem } from "@material-tailwind/react";
 import {
   HomeIcon,
   CurrencyDollarIcon,
@@ -13,33 +12,43 @@ import {
 import Cart from "../UserCarts/Cart";
 
 export function CustomSpeedDial() {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState('');
   const [cartOpen, setCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(
-    parseInt(localStorage.getItem('cartCount'), 10) || 0
+    parseInt(localStorage.getItem("cartCount"), 10) || 0
   );
+  const navigate = useNavigate();
 
   const toggleCartOpen = () => setCartOpen((cur) => !cur);
 
   useEffect(() => {
     const handleCartCountUpdate = () => {
-      const updatedCount = parseInt(localStorage.getItem('cartCount'), 10) || 0;
+      const updatedCount = parseInt(localStorage.getItem("cartCount"), 10) || 0;
       setCartCount(updatedCount);
     };
 
-    window.addEventListener('cartCountUpdated', handleCartCountUpdate);
+    window.addEventListener("cartCountUpdated", handleCartCountUpdate);
     return () => {
-      window.removeEventListener('cartCountUpdated', handleCartCountUpdate);
+      window.removeEventListener("cartCountUpdated", handleCartCountUpdate);
     };
   }, []);
 
-  // No need for updateCartCount since we rely on localStorage + event
-  const handleCartCountChange = (newTotalQuantity) => {
-    localStorage.setItem('cartCount', newTotalQuantity);
-    setCartCount(newTotalQuantity);
-    // Also dispatch event if cart changes from within the cart modal
-    window.dispatchEvent(new Event('cartCountUpdated'));
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    const role = localStorage.getItem('role');
+    setIsLoggedIn(loggedIn);
+    setUserRole(role);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsLoggedIn(false);
+    setUserRole('');
+    navigate('/');
+    window.location.reload();
   };
+
 
   return (
     <>
@@ -67,12 +76,25 @@ export function CustomSpeedDial() {
 
         {isLoggedIn && (
           <>
-            <Link to="/profile" className="flex flex-col items-center text-center">
-              <IconButton size="lg" className="rounded-full bg-white shadow">
-                <UserIcon className="h-6 w-6 text-green-500" />
-              </IconButton>
-              <Typography className="text-sm font-medium mt-1">Profile</Typography>
-            </Link>
+            <Menu>
+              <MenuHandler>
+                <div className="flex flex-col items-center text-center cursor-pointer">
+                  <IconButton size="lg" className="rounded-full bg-white shadow">
+                    <UserIcon className="h-6 w-6 text-green-500" />
+                  </IconButton>
+                  <Typography className="text-sm font-medium mt-1">Profile</Typography>
+                </div>
+              </MenuHandler>
+              <MenuList>
+                <Link to="/profile">
+                  <MenuItem>
+                    Profile Details
+                  </MenuItem>
+                </Link>
+                <hr className="my-2" />
+                <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+              </MenuList>
+            </Menu>
 
             <div
               className="flex flex-col items-center text-center cursor-pointer"
@@ -91,7 +113,6 @@ export function CustomSpeedDial() {
                       <ShoppingBagIcon className="h-6 w-6 text-green-500" />
                     </IconButton>
                   </Badge>
-                  
                   <Typography className="text-sm font-medium mt-1">Cart</Typography>
                 </>
               ) : (
@@ -119,7 +140,11 @@ export function CustomSpeedDial() {
       <Cart
         open={cartOpen}
         onClose={toggleCartOpen}
-        onCartCountChange={handleCartCountChange}
+        onCartCountChange={(newTotalQuantity) => {
+          localStorage.setItem("cartCount", newTotalQuantity);
+          setCartCount(newTotalQuantity);
+          window.dispatchEvent(new Event("cartCountUpdated"));
+        }}
       />
     </>
   );

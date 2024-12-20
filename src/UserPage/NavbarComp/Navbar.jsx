@@ -116,19 +116,8 @@ export function StickyNavbar() {
                                 >
                                     Admin Panel 
                                 </Button>
-                            )}
-                            {isLoggedIn ? (
-                                <Button
-                                    onClick={handleLogout}
-                                    variant="gradient"
-                                    color="red"
-                                    className="hidden lg:inline-block uppercase"
-                                >
-                                    Log Out
-                                </Button>
-                            ) : (
+                            )}  
                                 <AuthPage />
-                            )}
                         </div>
                         <IconButton
                             variant="text"
@@ -184,10 +173,7 @@ export function StickyNavbar() {
                         ) : (
                             <>
                                 <Button fullWidth variant="text" size="sm" className="w-full my-2">
-                                    <Link to="/login">Giriş Yap</Link>
-                                </Button>
-                                <Button fullWidth variant="gradient" size="sm" className="w-full my-2">
-                                    <span>Kayıt Ol</span>
+                                    <Link to="/login">Log In</Link>
                                 </Button>
                             </>
                         )}

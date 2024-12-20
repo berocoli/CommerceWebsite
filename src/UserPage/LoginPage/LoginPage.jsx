@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom"; // Import ReactDOM for portals
 import { Drawer, Button, Typography, IconButton, Input, Alert } from "@material-tailwind/react";
-import loginIcon from "../assets/log-cabin-svgrepo-com.svg";
+import loginIcon from '../../assets/log-cabin-svgrepo-com.svg';
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {

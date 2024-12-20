@@ -133,7 +133,7 @@ function Products() {
   return (
     <>
       <div className="flex flex-col justify-center items-center mx-4 my-12">
-        <div className="mx-auto max-w-screen-xl">
+        <div className="mx-auto max-w-screen">
           {/* Sort Controls */}
           <div className="flex justify-between items-center mb-4">
             <CategorySelect
@@ -154,7 +154,7 @@ function Products() {
               handleSortChange={handleSortChange}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {sortedProducts.map((product) => (
               <ProductCard
                 key={product.id}

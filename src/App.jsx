@@ -1,16 +1,17 @@
 // App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './Home/HomePage';
-import Products from './ProductsComp/Products';
-import LoginPage from './LoginPage/LoginPage';
-import CurrencyRates from './CurrencyComp/Currency';
-import Categories from './CategoryDrawer/Category';
+import HomePage from './UserPage/Home/HomePage';
+import Products from './UserPage/ProductsComp/Products';
+import LoginPage from './UserPage/LoginPage/LoginPage';
+import CurrencyRates from './UserPage/CurrencyComp/Currency';
+import Categories from './UserPage/CategoryDrawer/Category';
 import AdminPage from './AdminPage/AdminPage';
-import SignupPage from './SignupPage/SignupPage';
-import { StickyNavbar } from './NavbarComp/Navbar';
-import ProfilePage from './ProfilePage/Profile';
-import UserOrder from './UserOrders/Order';
+import SignupPage from './UserPage/SignupPage/SignupPage';
+import { StickyNavbar } from './UserPage/NavbarComp/Navbar';
+import ProfilePage from './UserPage/ProfilePage/Profile';
+import UserOrder from './UserPage/UserOrders/Order';
+import ProductPage from './UserPage/ProductsComp/ProductPage';
 
 function App() {
   // This is our single source of truth for cartCount
@@ -32,7 +33,7 @@ function App() {
         
         {/* Pass updateCartCount to Products */}
         <Route path="/products" element={<Products updateCartCount={updateCartCount} />} />
-        
+        <Route path="/product/page" element={<ProductPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/currency" element={<CurrencyRates />} />
         <Route path="/category" element={<Categories />} />

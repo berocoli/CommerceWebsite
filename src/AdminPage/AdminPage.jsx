@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Button, Card, CardBody, CardFooter } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
-import { StickyNavbar } from "../NavbarComp/Navbar";
+import { StickyNavbar } from "../UserPage/NavbarComp/Navbar";
 import UserManager from "./Users/UserManager";
 import ProductManager from "./Products/ProductManager";
 import OrderManager from "./Orders/OrderManager";
-import { FooterComponent } from "../Footer/FooterComponent";
+import { FooterComponent } from "../UserPage/Footer/FooterComponent";
 
 
 
